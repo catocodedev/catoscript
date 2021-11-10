@@ -6,6 +6,7 @@ namespace cato
         static void Main(String[] args)
         {
             string version = "Dev1.0.0";
+            string file = "null";
             Console.WriteLine("---------CatoScript Dev1.0.0----------");
             Console.WriteLine("Waiting Input");
             switch (Console.ReadLine())
@@ -14,18 +15,34 @@ namespace cato
                     Console.WriteLine(version);
                     break;
                 case "run":
-                    string file = Console.ReadLine();
-                    if (File.Exists(file))
+                    file = Console.ReadLine();
+                    string fileExt = System.IO.Path.GetExtension(file);
+                    if (file != "")
                     {
-                        string[] readText = File.ReadAllLines(file);
-                        foreach (string s in readText)
+                        if (fileExt == ".cato")
                         {
-                            Console.WriteLine(s);
+                            if (File.Exists(file))
+                            {
+                                string[] readText = File.ReadAllLines(file);
+                                foreach (string s in readText)
+                                {
+                                    Console.WriteLine(s);
+
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("File doesn't exsit");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("File not a catoscript file");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("File doesn't exsit");
+                        Console.WriteLine("Null!");
                     }
                     break;
                 default:
