@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Net;
 namespace cato
 {
     class cato
     {
         static void Main(String[] args)
         {
+            WebClient Client = new WebClient();
             string version = "Dev1.0.0";
             string file = "null";
             Console.WriteLine("---------CatoScript Dev1.0.0----------");
@@ -13,6 +15,14 @@ namespace cato
             {
                 case "ver":
                     Console.WriteLine(version);
+                    break;
+                case "pur":
+                    switch (Console.ReadLine())
+                    {
+                        case "get":
+                    Client.DownloadFile("http://script.cato.fun/assets/logo.png", "./logo.png");
+                            break;
+                     }
                     break;
                 case "run":
                     file = Console.ReadLine();
