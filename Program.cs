@@ -13,6 +13,21 @@ namespace cato
                 case "ver":
                     Console.WriteLine(version);
                     break;
+                case "run":
+                    string file = Console.ReadLine();
+                    if (File.Exists(file))
+                    {
+                        string[] readText = File.ReadAllLines(file);
+                        foreach (string s in readText)
+                        {
+                            Console.WriteLine(s);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("File doesn't exsit");
+                    }
+                    break;
                 default:
                     Console.WriteLine("Nothing. . .");
                     break;
