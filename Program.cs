@@ -25,7 +25,10 @@ namespace cato
                 return string.Empty;
             }
         }
-
+        static void CLI()
+        {
+            
+        }
         static void Execute(string line, int linenumber)
         {
             if (line.StartsWith("console.send "))
@@ -45,7 +48,7 @@ namespace cato
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Clear();
-                Console.WriteLine("UserGeneratedException: " + getBetween(line, "|\"", "\"|,") + " | " + line + " \n(Line "+linenumber+")");
+                Console.WriteLine("UserGeneratedException: " + getBetween(line, "|\"", "\"|") + " | " + line + " \n(Line "+linenumber+")");
             }
             else if (line.StartsWith("random.num ")) 
             { 
@@ -151,61 +154,62 @@ namespace cato
                         {
                             Run(args[0]);
                         }
-                        else if (args[0] == "CLI")
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine("-------- CatoScript " + version + " ----------");
-                            Console.WriteLine("Cato CLI ready!");
-                            string input = Console.ReadLine();
-                            switch (input)
-                            {
-                                case "exit":
-                                    System.Environment.Exit(0);
-                                    break;
-                                case "run":
-                                    string tmp1 = Console.ReadLine();
-                                    Run(tmp1);
-                                    break;
-                                case "pur":
-                                    string tmp2 = Console.ReadLine();
-                                    switch (tmp2)
-                                    {
-                                        case "get":
-                                            string get = Console.ReadLine();
-                                            Client.DownloadFile("https://script.cato.fun/pkgs/" + get + "/data/" + get + ".catop", "./logo.png");
-                                            break;
-                                        case "help":
-                                            Console.WriteLine("-----Pur Help-----");
-                                            Console.WriteLine("get - get a catponet from cao pkgs");
-                                            Console.WriteLine("help - shows this");
-                                            break;
-                                    }
-                                    break;
-                                case "help":
-                                    Console.WriteLine("----------CatoScript Help-------------------");
-                                    Console.WriteLine("run - Runs a .cato file");
-                                    Console.WriteLine("version/ver - shows version of catoscript");
-                                    Console.WriteLine("exit - leave the CLI");
-                                    Console.WriteLine("--------------------------------------------");
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Invalid syntax. try help");
-                            Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName + ".exe (ver/pur/run) [filename/get]");
-                        }
                         break;
                 }
             }
             catch (Exception err)
             {
-                Console.WriteLine("Invalid syntax.");
-                Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName + ".exe (ver/pur/run) [filename/get]");
-                Console.WriteLine();
-                Console.WriteLine(err.ToString());
-                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("-------- CatoScript " + version + " ----------");
+                Console.WriteLine("Cato CLI ready!");
+                string input = "";
+                while (input != "exit")
+                {
+                    input = Console.ReadLine();
+                    switch (input)
+                    {
+                        case "exit":
+                            System.Environment.Exit(0);
+                            break;
+                        case "run":
+                            string tmp1 = Console.ReadLine();
+                            Run(tmp1);
+                            break;
+                        case "pur":
+                            string tmp2 = Console.ReadLine();
+                            switch (tmp2)
+                            {
+                                case "get":
+                                    string get = Console.ReadLine();
+                                    Client.DownloadFile("https://script.cato.fun/pkgs/" + get + "/data/" + get + ".catop", "./logo.png");
+                                    break;
+                                case "help":
+                                    Console.WriteLine("-----Pur Help-----");
+                                    Console.WriteLine("get - get a catponet from cao pkgs");
+                                    Console.WriteLine("help - shows this");
+                                    break;
+                            }
+                            break;
+                        case "ver":
+                            Console.WriteLine(version);
+                            break;
+
+                        case "version":
+                            Console.WriteLine(version);
+                            break;
+                        case "help":
+                            Console.WriteLine("----------CatoScript Help-------------------");
+                            Console.WriteLine("run - Runs a .cato file");
+                            Console.WriteLine("version/ver - shows version of catoscript");
+                            Console.WriteLine("exit - leave the CLI");
+                            Console.WriteLine("--------------------------------------------");
+                            break;
+                        default:
+                            Console.WriteLine("Unknown Command! Try help");
+                            break;
+                    }
             }
+        }
             Console.WriteLine("Execution ended. Press any key to close CatoScript...");
             Console.ReadKey();
         }
