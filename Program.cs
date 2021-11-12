@@ -138,7 +138,7 @@ namespace cato
                         switch (args[1])
                         {
                             case "get":
-                                Client.DownloadFile("https://script.cato.fun/pkgs/" + args[2] + "/data/" + args[2] + ".catop", "./logo.png");
+                                // Client.DownloadFile("https://script.cato.fun/pkgs/" + args[2] + "/data/" + args[2] + ".catop", "./logo.png");
                                 break;
                             case "help":
                                 Console.WriteLine("Pur Help");
@@ -169,26 +169,12 @@ namespace cato
                     switch (input)
                     {
                         case "exit":
+                            Console.ForegroundColor = ConsoleColor.White;
                             System.Environment.Exit(0);
                             break;
                         case "run":
                             string tmp1 = Console.ReadLine();
                             Run(tmp1);
-                            break;
-                        case "pur":
-                            string tmp2 = Console.ReadLine();
-                            switch (tmp2)
-                            {
-                                case "get":
-                                    string get = Console.ReadLine();
-                                    Client.DownloadFile("https://script.cato.fun/pkgs/" + get + "/data/" + get + ".catop", "./logo.png");
-                                    break;
-                                case "help":
-                                    Console.WriteLine("-----Pur Help-----");
-                                    Console.WriteLine("get - get a catponet from cao pkgs");
-                                    Console.WriteLine("help - shows this");
-                                    break;
-                            }
                             break;
                         case "ver":
                             Console.WriteLine(version);
@@ -211,6 +197,7 @@ namespace cato
             }
         }
             Console.WriteLine("Execution ended. Press any key to close CatoScript...");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.ReadKey();
         }
     }
