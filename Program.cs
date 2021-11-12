@@ -25,7 +25,17 @@ namespace cato
             if (line.StartsWith("console.send"))
             {
                 if (getBetween(line, "|\"", "\"|") != String.Empty)
+                {
                     Console.WriteLine(getBetween(line, "|\"", "\"|"));
+                }
+                else
+                {
+                    throw new InvalidOperationException("console.send can't send a empty message!");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Invaild function | " + line);
             }
         }
 
