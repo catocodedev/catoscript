@@ -5,6 +5,37 @@ namespace cato
 {
     class cato
     {
+        static void Run(string file)
+        {
+            string fileExt = System.IO.Path.GetExtension(file);
+            if (file != null)
+            {
+                if (fileExt == ".cato")
+                {
+                    if (File.Exists(file))
+                    {
+                        string[] readText = File.ReadAllLines(file);
+                        foreach (string s in readText)
+                        {
+                            Console.WriteLine(s);
+
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("File doesn't exist.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("File not a catoscript file");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please write a file name after run");
+            }
+        }
         static void Main(String[] args)
         {
             WebClient Client = new();
@@ -22,49 +53,28 @@ namespace cato
                         break;
 
                     case "pur":
-                        switch (Console.ReadLine())
+                        switch (args[1])
                         {
                             case "get":
-                                Client.DownloadFile("http://script.cato.fun/assets/logo.png", "./logo.png");
+                                Client.DownloadFile("http://script.cato.fun/pkgs/"+ args[1] +"/data/"+ args[1] +".catop", "./logo.png");
                                 break;
                         }
                         break;
 
                     case "run":
-                        string file = args[1];
-                        string fileExt = System.IO.Path.GetExtension(file);
-                        if (file != null)
+                     Run(args[1]);
+                        break;
+                    default:
+                        if (args[0].Contains(".cato"))
                         {
-                            if (fileExt == ".cato")
-                            {
-                                if (File.Exists(file))
-                                {
-                                    string[] readText = File.ReadAllLines(file);
-                                    foreach (string s in readText)
-                                    {
-                                        Console.WriteLine(s);
-
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("File doesn't exist.");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("File not a catoscript file");
-                            }
+                            Run(args[0]);
                         }
                         else
                         {
-                            Console.WriteLine("Please write a file name after run");
+                            Console.WriteLine("Invalid syntax.");
+                            Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName + ".exe (ver/pur/run) [filename/get]");
                         }
-                        break;
-                    default:
-                        Console.WriteLine("Invalid syntax.");
-                        Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName + ".exe (ver/pur/run) [filename/get]");
-                        break;
+                            break;
                 }
             }
             catch (Exception err)
