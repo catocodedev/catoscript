@@ -30,12 +30,23 @@ namespace cato
                 }
                 else
                 {
-                    throw new InvalidOperationException("console.send can't send a empty message!");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Clear();
+                    Console.WriteLine("[ERROR] console.send can't send a empty message!");
+                    Console.WriteLine("Press any key to close CatoScript...");
+                    Console.ReadKey();
+                    System.Environment.Exit(101);
+
                 }
             }
             else
             {
-                throw new InvalidOperationException("Invaild function | " + line);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Clear();
+                Console.WriteLine("[ERROR] Invaild function | " + line);
+                Console.WriteLine("Press any key to close CatoScript...");
+                Console.ReadKey();
+                System.Environment.Exit(100);
             }
         }
 
