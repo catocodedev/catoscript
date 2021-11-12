@@ -3,8 +3,14 @@ using System.Net;
 
 namespace cato
 {
-    class cato
+    internal static class cato
     {
+        public static void Each<T>(this IEnumerable<T> ie, Action<T, int> action)
+        {
+            var i = 0;
+            foreach (var e in ie) action(e, i++);
+        }
+
         public static string getBetween(string strSource, string strStart, string strEnd)
         {
             int Start, End;
@@ -20,9 +26,9 @@ namespace cato
             }
         }
 
-        static void Execute(string line)
+        static void Execute(string line, int linenumber)
         {
-            if (line.StartsWith("console.send"))
+            if (line.StartsWith("console.send "))
             {
                 if (getBetween(line, "|\"", "\"|") != String.Empty)
                 {
@@ -32,21 +38,27 @@ namespace cato
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Clear();
-                    Console.WriteLine("[ERROR] console.send can't send a empty message!");
-                    Console.WriteLine("Press any key to close CatoScript...");
-                    Console.ReadKey();
-                    System.Environment.Exit(101);
-
+                    Console.WriteLine("NullReferenceException: \"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\" | " + line  + " \n(Line "+linenumber+")");
                 }
+            }
+            else if (line.StartsWith("debug.throw "))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Clear();
+                Console.WriteLine("UserGeneratedException: " + getBetween(line, "|\"", "\"|") + " | " + line + " \n(Line "+linenumber+")");
+            }
+            else if (line.StartsWith("random.num ")) 
+            { 
+                Random engine = new();
+                //set default values and then grab from the user
+                // int value = engine.Next(min, max); //if they try more than 2 then ye
+                //this code must work, just set min and max to something
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Clear();
-                Console.WriteLine("[ERROR] Invaild function | " + line);
-                Console.WriteLine("Press any key to close CatoScript...");
-                Console.ReadKey();
-                System.Environment.Exit(100);
+                Console.WriteLine("InvalidFunctionException: \"This function was not recognized.\" | " + line + " \n(Line "+linenumber+")");
             }
         }
 
@@ -60,10 +72,15 @@ namespace cato
                     if (File.Exists(file))
                     {
                         string[] readText = File.ReadAllLines(file);
-                        foreach (string s in readText)
+                        readText.Each((str, n) =>
                         {
-                            Execute(s);
-                        }
+                            Execute(str, n+1);
+                        });
+
+                        //foreach (string s in readText)
+                       // {
+                        //    Execute(s);
+                       // }
                     }
                     else
                     {
@@ -107,7 +124,7 @@ namespace cato
                         switch (args[1])
                         {
                             case "get":
-                                Client.DownloadFile("http://script.cato.fun/pkgs/" + args[1] + "/data/" + args[1] + ".catop", "./logo.png");
+                                Client.DownloadFile("https://script.cato.fun/pkgs/" + args[2] + "/data/" + args[2] + ".catop", "./logo.png");
                                 break;
                             case "help":
                                 Console.WriteLine("Pur Help");
