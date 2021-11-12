@@ -54,7 +54,7 @@ namespace cato
                 try
                 {
                     int min = Int32.Parse(getBetween(line, "|", "~"));
-                    int max = Int32.Parse(getBetween(line, "~", "|"));
+                    int max = Int32.Parse(getBetween(line, "~", "|")); 
                     int value = engine.Next(min, max);
                     Console.WriteLine(value);
                 }
@@ -150,6 +150,45 @@ namespace cato
                         if (args[0].Contains(".cato"))
                         {
                             Run(args[0]);
+                        }
+                        else if (args[0] == "CLI")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("-------- CatoScript " + version + " ----------");
+                            Console.WriteLine("Cato CLI ready!");
+                            string input = Console.ReadLine();
+                            switch (input)
+                            {
+                                case "exit":
+                                    System.Environment.Exit(0);
+                                    break;
+                                case "run":
+                                    string tmp1 = Console.ReadLine();
+                                    Run(tmp1);
+                                    break;
+                                case "pur":
+                                    string tmp2 = Console.ReadLine();
+                                    switch (tmp2)
+                                    {
+                                        case "get":
+                                            string get = Console.ReadLine();
+                                            Client.DownloadFile("https://script.cato.fun/pkgs/" + get + "/data/" + get + ".catop", "./logo.png");
+                                            break;
+                                        case "help":
+                                            Console.WriteLine("-----Pur Help-----");
+                                            Console.WriteLine("get - get a catponet from cao pkgs");
+                                            Console.WriteLine("help - shows this");
+                                            break;
+                                    }
+                                    break;
+                                case "help":
+                                    Console.WriteLine("----------CatoScript Help-------------------");
+                                    Console.WriteLine("run - Runs a .cato file");
+                                    Console.WriteLine("version/ver - shows version of catoscript");
+                                    Console.WriteLine("exit - leave the CLI");
+                                    Console.WriteLine("--------------------------------------------");
+                                    break;
+                            }
                         }
                         else
                         {
