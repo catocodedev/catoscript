@@ -22,6 +22,7 @@ namespace cato
 
         static void Execute(string line)
         {
+            Console.WriteLine(line);
             if (line.StartsWith("console.send"))
             {
                 Console.WriteLine(getBetween(line, "/\"", "\\\""));
@@ -89,10 +90,11 @@ namespace cato
                         switch (args[1])
                         {
                             case "get":
-                                Client.DownloadFile("http://script.cato.fun/pkgs/"+ args[1] +"/data/"+ args[1] +".catop", "./logo.png");
+                                Client.DownloadFile("http://pkg.cato.fun/pkgs/"+ args[2] +"/data/"+ args[2] +".catop", "./logo.png");
                                 break;
                             case "help":
                                 Console.WriteLine("Pur Help");
+                                Console.WriteLine("get - get a catoponet from pkg cato");
                                 break;
                         }
                         break;
