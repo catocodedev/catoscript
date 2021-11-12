@@ -5,6 +5,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ApplicationIcon>cato.ico</ApplicationIcon>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="cato.ico" />
+  </ItemGroup>
 
 </Project>

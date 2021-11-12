@@ -52,11 +52,21 @@ namespace cato
                         Console.WriteLine(version);
                         break;
 
+                    case "help":
+                        Console.WriteLine("----------CatoScript Help-------------------");
+                        Console.WriteLine("run - Runs a .cato file");
+                        Console.WriteLine("version/ver - shows version of catoscript");
+                        Console.WriteLine("--------------------------------------------");
+                        break;
+
                     case "pur":
                         switch (args[1])
                         {
                             case "get":
                                 Client.DownloadFile("http://script.cato.fun/pkgs/"+ args[1] +"/data/"+ args[1] +".catop", "./logo.png");
+                                break;
+                            case "help":
+                                Console.WriteLine("Pur Help");
                                 break;
                         }
                         break;
@@ -71,7 +81,7 @@ namespace cato
                         }
                         else
                         {
-                            Console.WriteLine("Invalid syntax.");
+                            Console.WriteLine("Invalid syntax. try help");
                             Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName + ".exe (ver/pur/run) [filename/get]");
                         }
                             break;
