@@ -45,14 +45,25 @@ namespace cato
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Clear();
-                Console.WriteLine("UserGeneratedException: " + getBetween(line, "|\"", "\"|") + " | " + line + " \n(Line "+linenumber+")");
+                Console.WriteLine("UserGeneratedException: " + getBetween(line, "|\"", "\"|,") + " | " + line + " \n(Line "+linenumber+")");
             }
             else if (line.StartsWith("random.num ")) 
             { 
                 Random engine = new();
-                //set default values and then grab from the user
-                // int value = engine.Next(min, max); //if they try more than 2 then ye
-                //this code must work, just set min and max to something
+                //this should grab |min:max|
+                try
+                {
+                    int min = Int32.Parse(getBetween(line, "|", "~"));
+                    int max = Int32.Parse(getBetween(line, "~", "|"));
+                    int value = engine.Next(min, max);
+                    Console.WriteLine(value);
+                }
+                catch (FormatException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Clear();
+                    Console.WriteLine("InvalidInputException: " + getBetween(line, "|", "~") + " & " + getBetween(line, "~", "|") + " are invalid| " + line + " \n(Line "+linenumber+")");
+                }
             }
             else
             {
