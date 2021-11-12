@@ -18,22 +18,18 @@ namespace cato
             {
                 return string.Empty;
             }
-        }       
+        }
 
         static void Execute(string line)
         {
-            Console.WriteLine(line);
             if (line.StartsWith("console.send"))
             {
-                Console.WriteLine(getBetween(line, "/\"", "\\\""));
-            }
-            else if (line.StartsWith("log.write")) 
-            {
-                Console.WriteLine(getBetween(line, "/\"", "\\\""));
+                if (getBetween(line, "|\"", "\"|") != String.Empty)
+                    Console.WriteLine(getBetween(line, "|\"", "\"|"));
             }
         }
 
-        static void Run(string file) 
+        static void Run(string file)
         {
             string fileExt = System.IO.Path.GetExtension(file);
             if (file != null)
@@ -90,17 +86,16 @@ namespace cato
                         switch (args[1])
                         {
                             case "get":
-                                Client.DownloadFile("http://pkg.cato.fun/pkgs/"+ args[2] +"/data/"+ args[2] +".catop", "./logo.png");
+                                Client.DownloadFile("http://script.cato.fun/pkgs/" + args[1] + "/data/" + args[1] + ".catop", "./logo.png");
                                 break;
                             case "help":
                                 Console.WriteLine("Pur Help");
-                                Console.WriteLine("get - get a catoponet from pkg cato");
                                 break;
                         }
                         break;
 
                     case "run":
-                     Run(args[1]);
+                        Run(args[1]);
                         break;
                     default:
                         if (args[0].Contains(".cato"))
@@ -112,7 +107,7 @@ namespace cato
                             Console.WriteLine("Invalid syntax. try help");
                             Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName + ".exe (ver/pur/run) [filename/get]");
                         }
-                            break;
+                        break;
                 }
             }
             catch (Exception err)
