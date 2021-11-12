@@ -88,8 +88,9 @@ namespace cato
                 Console.WriteLine(err.ToString());
                 Console.WriteLine();
             }
-            Console.WriteLine("Execution ended. Press any key to close CatoScript...");
-            Console.ReadKey();
+            Console.WriteLine("Execution ended.");
+            System.Threading.Thread.Sleep(3000);
+            Environment.Exit(0);
         }
     }
 }
