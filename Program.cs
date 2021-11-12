@@ -5,7 +5,34 @@ namespace cato
 {
     class cato
     {
-        static void Run(string file)
+        public static string getBetween(string strSource, string strStart, string strEnd)
+        {
+            int Start, End;
+            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
+            {
+                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
+                End = strSource.IndexOf(strEnd, Start);
+                return strSource.Substring(Start, End - Start);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }       
+
+        static void Execute(string line)
+        {
+            if (line.StartsWith("console.send"))
+            {
+                Console.WriteLine(getBetween(line, "/\"", "\\\""));
+            }
+            else if (line.StartsWith("log.write")) 
+            {
+                Console.WriteLine(getBetween(line, "/\"", "\\\""));
+            }
+        }
+
+        static void Run(string file) 
         {
             string fileExt = System.IO.Path.GetExtension(file);
             if (file != null)
@@ -17,8 +44,7 @@ namespace cato
                         string[] readText = File.ReadAllLines(file);
                         foreach (string s in readText)
                         {
-                            Console.WriteLine(s);
-
+                            Execute(s);
                         }
                     }
                     else
