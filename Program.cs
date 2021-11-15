@@ -5,7 +5,7 @@ namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev1.0.1";
+        public static string version = "Dev1.0.2";
         public static string purver = "Dev1.0.0";
     }
     internal static class cato
@@ -29,6 +29,16 @@ namespace cato
             {
                 return string.Empty;
             }
+        }
+        static void catoexception (string type, string info, string line, int linenum, int errornum)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Clear();
+            Console.WriteLine(type +"Execption: "+ info + " | " + line + "(line:"+ linenum +")");
+            Console.WriteLine("ERROR CODE : " + errornum);
+            Console.ReadKey();
+            System.Environment.Exit(errornum);
+
         }
         static void cli()
         {
@@ -105,6 +115,7 @@ namespace cato
                         break;
                     case "help":
                         Console.WriteLine("------Pur Help-------");
+                        Console.WriteLine("quit - retrun to CatoScript CLI");
                         break;
                     case "quit":
                         cli();
@@ -125,43 +136,54 @@ namespace cato
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Clear();
-                    Console.WriteLine("NullReferenceException: \"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\" | " + line  + " \n(Line "+linenumber+")");
+                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
                 }
             }
             else if (line.StartsWith("debug.throw "))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Clear();
-                Console.WriteLine("UserGeneratedException: " + getBetween(line, "|\"", "\"|") + " | " + line + " \n(Line "+linenumber+")");
+                catoexception("UserGenerated", getBetween(line, "|\"", "\"|"), line, linenumber, 200);
             }
-            else if (line.StartsWith("random.num ")) 
-            { 
+            else if (line.StartsWith("random.num "))
+            {
                 Random engine = new();
                 //this should grab |min:max|
                 try
                 {
                     int min = Int32.Parse(getBetween(line, "|", "~"));
-                    int max = Int32.Parse(getBetween(line, "~", "|")); 
+                    int max = Int32.Parse(getBetween(line, "~", "|"));
                     int value = engine.Next(min, max);
                     Console.WriteLine(value);
                 }
                 catch (FormatException)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Clear();
-                    Console.WriteLine("InvalidInputException: " + getBetween(line, "|", "~") + " & " + getBetween(line, "~", "|") + " are invalid| " + line + " \n(Line "+linenumber+")");
+                    catoexception("InvalidInput", getBetween(line, "|", "~") + " & " + getBetween(line, "~", "|") + " are invalid", line, linenumber, 102);
                 }
+            }
+            else if (line.StartsWith("script.pause.time "))
+            {
+                try
+                {
+                    Thread.Sleep(Int32.Parse(getBetween(line, "|", "|")));
+                }
+                catch (FormatException)
+                {
+                    catoexception("InvalidInput", getBetween(line, "|", "|") + " is invalid", line, linenumber, 102);
+                }
+            }
+            else if (line.StartsWith("script.pause.keywait "))
+            {
+                Console.WriteLine("Script Paused! untill user presses a key");
+                Console.ReadKey();
+            }
+            else if (line.StartsWith("script.quit "))
+            {
+                System.Environment.Exit(0);
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Clear();
-                Console.WriteLine("InvalidFunctionException: \"This function was not recognized.\" | " + line + " \n(Line "+linenumber+")");
+                catoexception("InvalidFunction", "\"This function was not recognized.\"", line, linenumber, 100);
             }
         }
-
         static void Run(string file)
         {
             string fileExt = System.IO.Path.GetExtension(file);
