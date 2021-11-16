@@ -128,7 +128,7 @@ namespace cato
                 }
             }   
         }
-        static void Execute(string line, int linenumber, CatoData catoData)
+        static void Execute(string line, int linenumber)
         {
             if (line.StartsWith("%"))
             {
@@ -176,7 +176,7 @@ namespace cato
                     catoexception("InvalidInput", getBetween(line, "|", "|") + " is invalid", line, linenumber, 102);
                 }
             }
-            else if (line.StartsWith("script.pause.keywait "))
+            else if (line.StartsWith("script.pause.keywait#"))
             {
                 Console.WriteLine("Script Paused! untill user presses a key");
                 Console.ReadKey();
@@ -185,23 +185,9 @@ namespace cato
             {
                 System.Environment.Exit(0);
             }
-            else if (line.StartsWith("open.webpage "))
-            {
-                string site = "";
-                if (getBetween(line, "|\"", "\"|") != String.Empty)
-                {
-                    site = getBetween(line, "|\"", "\"|");
-                    System.Diagnostics.Process.Start(site);
-                }
-                else
-                {
-                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nopen.site can not open an empty string.\"", line, linenumber, 101);
-                }
-            
-            }
             else if (line.StartsWith("get.OS#"))
             {
-                Console.WriteLine("The User OS is " + catoData.OS);
+                Console.WriteLine("The User OS is " + RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
             }
             else
             {
@@ -220,7 +206,7 @@ namespace cato
                         string[] readText = File.ReadAllLines(file);
                         readText.Each((str, n) =>
                         {
-                            Execute(str, n+1, CatoData);
+                            Execute(str, n+1);
                         });
 
                         //foreach (string s in readText)
@@ -243,21 +229,9 @@ namespace cato
                 Console.WriteLine("Please write a file name after run");
             }
         }
-        static void Main(String[] args, CatoData catoData)
+        static void Main(String[] args)
         {
             // static readonly HttpClient Client = new HttpClient();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                catoData.OS = "Linux";
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                catoData.OS = "Windows";
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                catoData.OS = "OSX";
-            }
             if (args == null || args.Length == 0)
             {
                 cli();
@@ -301,7 +275,8 @@ namespace cato
                     Console.Clear();
                     Console.WriteLine("ERROR CAUGHT!" + err);
                 }
-                Console.WriteLine("Execution ended. Press any key to close CatoScript...");
+                Console.Clear();
+                Console.WriteLine("Execution ended! Press any key to close CatoScript...");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.ReadKey();
             }
