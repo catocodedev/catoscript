@@ -1,12 +1,14 @@
 using System;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev1.0.2";
-        public static string purver = "Dev1.0.0";
+        public static string version = "Dev0.1.0";
+        public static string purver = "Dev0.1.0";
+        public string OS = "null";
     }
     internal static class cato
     {
@@ -43,7 +45,7 @@ namespace cato
         static void cli()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.Clear();
             Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
             Console.WriteLine("Cato CLI ready!");
@@ -67,7 +69,7 @@ namespace cato
                         Console.WriteLine("Cato File finnished running. Press any key to retrun to CLI");
                         Console.ReadKey();
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.BackgroundColor = ConsoleColor.Black;
                         Console.Clear();
                         Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
                         Console.WriteLine("Cato CLI ready!");
@@ -100,9 +102,9 @@ namespace cato
             static void pur()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-                Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                Console.Clear();
-                Console.WriteLine("--------PUR"+ CatoData.purver +"----------");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Clear();
+                Console.WriteLine("--------PUR "+ CatoData.purver +"----------");
                 Console.WriteLine("PUR CLI ready!");
             string purcmd = "";
             while (purcmd != "quit")
@@ -126,9 +128,13 @@ namespace cato
                 }
             }   
         }
-        static void Execute(string line, int linenumber)
+        static void Execute(string line, int linenumber, CatoData catoData)
         {
-            if (line.StartsWith("console.send "))
+            if (line.StartsWith("%"))
+            {
+                // nothing because comment
+            }
+            else if (line.StartsWith("console.send "))
             {
                 if (getBetween(line, "|\"", "\"|") != String.Empty)
                 {
@@ -175,9 +181,27 @@ namespace cato
                 Console.WriteLine("Script Paused! untill user presses a key");
                 Console.ReadKey();
             }
-            else if (line.StartsWith("script.quit "))
+            else if (line.StartsWith("script.quit#"))
             {
                 System.Environment.Exit(0);
+            }
+            else if (line.StartsWith("open.webpage "))
+            {
+                string site = "";
+                if (getBetween(line, "|\"", "\"|") != String.Empty)
+                {
+                    site = getBetween(line, "|\"", "\"|");
+                    System.Diagnostics.Process.Start(site);
+                }
+                else
+                {
+                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nopen.site can not open an empty string.\"", line, linenumber, 101);
+                }
+            
+            }
+            else if (line.StartsWith("get.OS#"))
+            {
+                Console.WriteLine("The User OS is " + catoData.OS);
             }
             else
             {
@@ -196,7 +220,7 @@ namespace cato
                         string[] readText = File.ReadAllLines(file);
                         readText.Each((str, n) =>
                         {
-                            Execute(str, n+1);
+                            Execute(str, n+1, CatoData);
                         });
 
                         //foreach (string s in readText)
@@ -219,9 +243,21 @@ namespace cato
                 Console.WriteLine("Please write a file name after run");
             }
         }
-        static void Main(String[] args)
+        static void Main(String[] args, CatoData catoData)
         {
-        WebClient Client = new();
+            // static readonly HttpClient Client = new HttpClient();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                catoData.OS = "Linux";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                catoData.OS = "Windows";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                catoData.OS = "OSX";
+            }
             if (args == null || args.Length == 0)
             {
                 cli();
