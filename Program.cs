@@ -10,6 +10,9 @@ namespace cato
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
+    public class RuntimeData
+    {
+    }
     internal static class cato
     {
         public static void Each<T>(this IEnumerable<T> ie, Action<T, int> action)
@@ -119,6 +122,9 @@ namespace cato
                         Console.WriteLine("------Pur Help-------");
                         Console.WriteLine("quit - retrun to CatoScript CLI");
                         break;
+                    case "init":
+                    // add code to make folders and files
+                        break;
                     case "quit":
                         cli();
                         break;
@@ -130,6 +136,8 @@ namespace cato
         }
         static void Execute(string line, int linenumber)
         {
+         IDictionary<string, string> kits = new Dictionary<string, string>();
+
             if (line.StartsWith("%"))
             {
                 // nothing because comment
@@ -189,6 +197,21 @@ namespace cato
             {
                 Console.WriteLine("The User OS is " + RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
             }
+            else if (line.StartsWith("@kit "))
+            {
+                try
+                {
+                    kits[getBetween(line, "{\"", "\",")] = getBetween(line, ",\"", "\"}");
+                }
+                catch (ArgumentException)
+                {
+                    catoexception("InvaildKitDelcare", "The kit could not be delacared!", line, linenumber, 300);
+                }
+            }
+            else if (line.StartsWith("console.send.kit "))
+            {
+
+            }
             else
             {
                 catoexception("InvalidFunction", "\"This function was not recognized.\"", line, linenumber, 100);
@@ -209,10 +232,6 @@ namespace cato
                             Execute(str, n+1);
                         });
 
-                        //foreach (string s in readText)
-                       // {
-                        //    Execute(s);
-                       // }
                     }
                     else
                     {
