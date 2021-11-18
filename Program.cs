@@ -201,16 +201,23 @@ namespace cato
             {
                 try
                 {
-                    kits[getBetween(line, "{\"", "\",")] = getBetween(line, ",\"", "\"}");
+                    kits.Add(getBetween(line, "{\"", "\","), getBetween(line, ",\"", "\"}"));
                 }
-                catch (ArgumentException)
+                catch (Exception)
                 {
                     catoexception("InvaildKitDelcare", "The kit could not be delacared!", line, linenumber, 300);
                 }
             }
             else if (line.StartsWith("console.send.kit "))
             {
-
+                try
+                {
+                Console.WriteLine(kits[getBetween(line, "|\"", "\"|")]);
+                }
+                catch (Exception)
+                {
+                    catoexception("InvaildKit", "The kit "+ getBetween(line, "|\"", "\"|") +" wasn't found!", line, linenumber, 301);
+                }
             }
             else
             {
