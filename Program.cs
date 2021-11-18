@@ -136,8 +136,7 @@ namespace cato
         }
         static void Execute(string line, int linenumber)
         {
-         IDictionary<string, string> kits = new Dictionary<string, string>();
-
+            IDictionary<string, string> kits = new Dictionary<string, string>();
             if (line.StartsWith("%"))
             {
                 // nothing because comment
@@ -212,7 +211,7 @@ namespace cato
             {
                 try
                 {
-                Console.WriteLine(kits[getBetween(line, "|\"", "\"|")]);
+                Console.WriteLine("For key = \"tif\", value = {0}.", kits[getBetween(line, "|\"", "\"|")]);
                 }
                 catch (Exception)
                 {
