@@ -6,7 +6,7 @@ namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev0.1.0";
+        public static string version = "Dev0.1.1";
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
@@ -88,12 +88,23 @@ namespace cato
                         pur();
                         input = "";
                         break;
+                    case "eval":
+                        Console.Clear();
+                        string test = Console.ReadLine(); ;
+                        Execute(test, 0);
+                        Console.WriteLine("==========EVAL RAN PRESS ANY KEY TO RETURN TO CLI========");
+                        Console.ReadKey();
+                        Console.Clear();
+                        Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
+                        Console.WriteLine("Cato CLI ready!");
+                        break;
                     case "help":
                         Console.WriteLine("----------CatoScript Help-------------------");
                         Console.WriteLine("run - Runs a .cato file");
                         Console.WriteLine("version/ver - shows version of catoscript");
                         Console.WriteLine("exit - leave the CLI");
                         Console.WriteLine("pur - open PUR CLI");
+                        Console.WriteLine("eval - test a line of code");
                         Console.WriteLine("--------------------------------------------");
                         break;
                     default:
@@ -172,6 +183,58 @@ namespace cato
                     catoexception("InvalidInput", getBetween(line, "|", "~") + " & " + getBetween(line, "~", "|") + " are invalid", line, linenumber, 102);
                 }
             }
+            else if (line.StartsWith("math.add "))
+            {
+                try
+                {
+                    int num1 = Int32.Parse(getBetween(line, "|", "+"));
+                    int num2 = Int32.Parse(getBetween(line, "+", "|"));
+                    Console.WriteLine(num1 + num2);
+                }
+                catch (FormatException)
+                {
+                    catoexception("InvalidInput", getBetween(line, "|", "+") + " & " + getBetween(line, "+", "|") + " are invalid", line, linenumber, 102);
+                }
+            }
+            else if (line.StartsWith("math.sub "))
+            {
+                try
+                {
+                    int num1 = Int32.Parse(getBetween(line, "|", "-"));
+                    int num2 = Int32.Parse(getBetween(line, "-", "|"));
+                    Console.WriteLine(num1 - num2);
+                }
+                catch (FormatException)
+                {
+                    catoexception("InvalidInput", getBetween(line, "|", "-") + " & " + getBetween(line, "-", "|") + " are invalid", line, linenumber, 102);
+                }
+            }
+            else if (line.StartsWith("math.multi "))
+            {
+                try
+                {
+                    int num1 = Int32.Parse(getBetween(line, "|", "*"));
+                    int num2 = Int32.Parse(getBetween(line, "*", "|"));
+                    Console.WriteLine(num1 * num2);
+                }
+                catch (FormatException)
+                {
+                    catoexception("InvalidInput", getBetween(line, "|", "*") + " & " + getBetween(line, "*", "|") + " are invalid", line, linenumber, 102);
+                }
+            }
+            else if (line.StartsWith("math.divide "))
+            {
+                try
+                {
+                    int num1 = Int32.Parse(getBetween(line, "|", "/"));
+                    int num2 = Int32.Parse(getBetween(line, "/", "|"));
+                    Console.WriteLine(num1 / num2);
+                }
+                catch (FormatException)
+                {
+                    catoexception("InvalidInput", getBetween(line, "|", "/") + " & " + getBetween(line, "/", "|") + " are invalid", line, linenumber, 102);
+                }
+            }
             else if (line.StartsWith("script.pause.time "))
             {
                 try
@@ -201,6 +264,7 @@ namespace cato
                 try
                 {
                     kits.Add(getBetween(line, "{\"", "\","), getBetween(line, ",\"", "\"}"));
+                    Console.WriteLine(kits[getBetween(line, "{\"", "\",")]);
                 }
                 catch (Exception)
                 {
