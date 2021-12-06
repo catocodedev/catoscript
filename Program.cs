@@ -6,7 +6,7 @@ namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev0.1.1";
+        public static string version = "Dev0.1.2";
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
@@ -95,8 +95,13 @@ namespace cato
                         Console.WriteLine("==========EVAL RAN PRESS ANY KEY TO RETURN TO CLI========");
                         Console.ReadKey();
                         Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.BackgroundColor = ConsoleColor.Black;
                         Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
-                        Console.WriteLine("Cato CLI ready!");
+                        break;
+                    case "clean":
+                        Console.Clear();
+                        Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
                         break;
                     case "help":
                         Console.WriteLine("----------CatoScript Help-------------------");
@@ -162,6 +167,50 @@ namespace cato
                 {
                     catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
                 }
+            }
+            else if (line.StartsWith("console.clean#"))
+            {
+                Console.Clear();
+            }
+            else if (line.StartsWith("console.set.back.color "))
+            {
+                if (getBetween(line, "|\"", "\"|") != String.Empty)
+                {
+                    string backcolor = getBetween(line, "|\"", "\"|");
+                    if (Enum.TryParse(backcolor, out ConsoleColor background))
+                    {
+                        Console.BackgroundColor = background;
+                    }
+                    else
+                    {
+                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to "+getBetween(line, "|\"", "\"|")+"", line, linenumber, 400);
+                    }
+                }
+                else
+                {
+                    catoexception("NullReference", "Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
+                }
+                
+            }
+            else if (line.StartsWith("console.set.text.color "))
+            {
+                if (getBetween(line, "|\"", "\"|") != String.Empty)
+                {
+                    string textcolor = getBetween(line, "|\"", "\"|");
+                    if (Enum.TryParse(textcolor, out ConsoleColor textc))
+                    {
+                        Console.ForegroundColor = textc;
+                    }
+                    else
+                    {
+                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to "+getBetween(line, "|\"", "\"|")+"", line, linenumber, 400);
+                    }
+                }
+                else
+                {
+                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
+                }
+
             }
             else if (line.StartsWith("debug.throw "))
             {
