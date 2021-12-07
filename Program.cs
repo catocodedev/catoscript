@@ -137,6 +137,16 @@ namespace cato
             string purcmd = "";
             while (purcmd != "quit")
             {
+                Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
+                {
+                }
+                static void myHandler(object sender, ConsoleCancelEventArgs args)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    args.Cancel = true;
+                    System.Environment.Exit(0);
+                }
                 purcmd = Console.ReadLine();
                 switch (purcmd)
                 {
@@ -391,10 +401,14 @@ namespace cato
                     {
                         case "ver":
                             Console.WriteLine(CatoData.version);
+                            Console.ReadKey();
+                            System.Environment.Exit(0);
                             break;
 
                         case "version":
                             Console.WriteLine(CatoData.version);
+                            Console.ReadKey();
+                            System.Environment.Exit(0);
                             break;
 
                         case "pur":
@@ -403,6 +417,24 @@ namespace cato
 
                         case "":
                             cli();
+                            break;
+                        case "help":
+                            Console.WriteLine("----------CatoScript Help-------------------");
+                            Console.WriteLine("run - Runs a .cato file");
+                            Console.WriteLine("version/ver - shows version of catoscript");
+                            Console.WriteLine("pur - open PUR CLI");
+                            Console.WriteLine("eval - test a line of code");
+                            Console.WriteLine("--------------------------------------------");
+                            Console.ReadKey();
+                            System.Environment.Exit(0);
+                            break;
+                        case "eval":
+                            Console.Clear();
+                            string test = Console.ReadLine(); ;
+                            Execute(test, 0);
+                            Console.WriteLine("==========EVAL RAN PRESS ANY KEY TO QUIT========");
+                            Console.ReadKey();
+                            System.Environment.Exit(0);
                             break;
                         default:
                             if (args[0].Contains(".cato"))
