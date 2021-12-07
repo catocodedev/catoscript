@@ -1,6 +1,5 @@
-using System;
-using System.Net;
 using System.Runtime.InteropServices;
+
 
 namespace cato
 {
@@ -35,7 +34,7 @@ namespace cato
                 return string.Empty;
             }
         }
-        static void catoexception (string type, string info, string line, int linenum, int errornum)
+        static void catoexception(string type, string info, string line, int linenum, int errornum)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
@@ -55,7 +54,17 @@ namespace cato
             string input = "";
             while (input != "exit")
             {
-                input = Console.ReadLine();
+                Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
+                { 
+                }
+                    static void myHandler(object sender, ConsoleCancelEventArgs args)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    args.Cancel = true;
+                    System.Environment.Exit(0);
+                }
+                    input = Console.ReadLine();
                 switch (input)
                 {
                     case "exit":
@@ -369,8 +378,8 @@ namespace cato
         }
         static void Main(String[] args)
         {
-            // static readonly HttpClient Client = new HttpClient();
-            if (args == null || args.Length == 0)
+                // static readonly HttpClient Client = new HttpClient();
+                if (args == null || args.Length == 0)
             {
                 cli();
             }
