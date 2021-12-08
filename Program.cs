@@ -408,11 +408,11 @@ namespace cato
             }
             else if (line.StartsWith("console.send.kit "))
             {
-                try
+                if (kit.Get(getBetween(line, "|\"", "\"|")) != String.Empty)
                 {
-                Console.WriteLine(kit.Get(getBetween(line, "|\"", "\"|")));
+                    Console.WriteLine(kit.Get(getBetween(line, "|\"", "\"|")));
                 }
-                catch (Exception)
+                else
                 {
                     catoexception("InvaildKit", "The kit "+ getBetween(line, "|\"", "\"|") +" wasn't found!", line, linenumber, 301);
                 }
