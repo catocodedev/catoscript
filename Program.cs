@@ -5,12 +5,36 @@ namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev0.1.2";
+        public static string version = "Dev0.1.3";
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
-    public class RuntimeData
+    public class Kits
     {
+        private Dictionary<string, string> kits = new Dictionary<string, string>();
+        public void Set(string key, string value)
+        {
+            if (kits.ContainsKey(key))
+            {
+                kits[key] = value;
+            }
+            else
+            {
+                kits.Add(key, value);
+            }
+        }
+
+        public string Get(string key)
+        {
+            string result = null;
+
+            if (kits.ContainsKey(key))
+            {
+                result = kits[key];
+            }
+
+            return result;
+        }
     }
     internal static class cato
     {
@@ -41,6 +65,8 @@ namespace cato
             Console.WriteLine(type +"Execption: "+ info + " | " + line + "(line:"+ linenum +")");
             Console.WriteLine("ERROR CODE : " + errornum);
             Console.ReadKey();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
             System.Environment.Exit(errornum);
 
         }
@@ -171,7 +197,7 @@ namespace cato
         }
         static void Execute(string line, int linenumber)
         {
-            IDictionary<string, string> kits = new Dictionary<string, string>();
+            var kit = new Kits();
             if (line.StartsWith("%"))
             {
                 // nothing because comment
@@ -361,6 +387,8 @@ namespace cato
             }
             else if (line.StartsWith("script.quit#"))
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
                 System.Environment.Exit(0);
             }
             else if (line.StartsWith("get.OS#"))
@@ -371,8 +399,7 @@ namespace cato
             {
                 try
                 {
-                    kits.Add(getBetween(line, "{\"", "\","), getBetween(line, ",\"", "\"}"));
-                    Console.WriteLine(kits[getBetween(line, "{\"", "\",")]);
+                    kit.Set(getBetween(line, "{\"", "\","), getBetween(line, ",\"", "\"}"));
                 }
                 catch (Exception)
                 {
@@ -383,7 +410,7 @@ namespace cato
             {
                 try
                 {
-                Console.WriteLine("For key = \"tif\", value = {0}.", kits[getBetween(line, "|\"", "\"|")]);
+                Console.WriteLine(kit.Get(getBetween(line, "|\"", "\"|")));
                 }
                 catch (Exception)
                 {
