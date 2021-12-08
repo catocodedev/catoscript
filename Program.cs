@@ -203,6 +203,34 @@ namespace cato
                     catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
                 }
             }
+            else if (line.StartsWith("console.object.load% "))
+            {
+                string text = "";
+                int delay = 0;
+                if (getBetween(line, "|\"", "\"") != String.Empty)
+                {
+                    text = getBetween(line, "|\"", "\"");
+                }
+                else
+                {
+                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.object can not send an empty string.\"", line, linenumber, 101);
+                }
+                try
+                {
+                    delay = Int32.Parse(getBetween(line, ",", "|"));
+                }
+                catch (FormatException)
+                {
+                    catoexception("InvalidInput", getBetween(line, ",", "|") + " is invalid", line, linenumber, 102);
+                }
+                Console.WriteLine("");
+                for (int i = 0; i < 101; i++)
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop -1);
+                    Console.WriteLine(text + i +"%");
+                    Thread.Sleep(delay);
+                }
+            }
             else if (line.StartsWith("console.set.back.color "))
             {
                 if (getBetween(line, "|\"", "\"|") != String.Empty)
