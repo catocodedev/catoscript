@@ -191,6 +191,18 @@ namespace cato
             {
                 Console.Clear();
             }
+            else if (line.StartsWith("console.overwrite.up "))
+            {
+                if (getBetween(line, "|\"", "\"|") != String.Empty)
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop -1);
+                    Console.WriteLine(getBetween(line, "|\"", "\"|"));
+                }
+                else
+                {
+                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
+                }
+            }
             else if (line.StartsWith("console.set.back.color "))
             {
                 if (getBetween(line, "|\"", "\"|") != String.Empty)
