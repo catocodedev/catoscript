@@ -405,6 +405,7 @@ namespace cato
                 {
                     catoexception("InvaildKitDelcare", "The kit could not be delacared!", line, linenumber, 300);
                 }
+
             }
             else if (line.StartsWith("console.send.kit "))
             {
