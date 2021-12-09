@@ -402,7 +402,8 @@ namespace cato
             {
                 try
                 {
-                    kit.Set(getBetween(line, "{\"", "\","), getBetween(line, ",\"", "\"}"));
+                    kit.Set(getBetween(line, "{", ","), getBetween(line, ",\"", "\"}"));
+                    Console.WriteLine(getBetween(line, "{", ",") + " | " + getBetween(line, ",\"", "\"}"));
                 }
                 catch (Exception)
                 {
