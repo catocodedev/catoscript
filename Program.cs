@@ -17,10 +17,12 @@ namespace cato
             if (kits.ContainsKey(key))
             {
                 kits[key] = value;
+                Console.WriteLine(key + " updated as " + kits[key]);
             }
             else
             {
                 kits.Add(key, value);
+                Console.WriteLine(key + " Set as " + kits[key]);
             }
         }
         public string Get(string key)
@@ -33,10 +35,6 @@ namespace cato
             }
 
             return result;
-        }
-        public void Update(string key, string value)
-        {
-            kits[key] = value;
         }
     }
     internal static class cato
@@ -409,13 +407,12 @@ namespace cato
                 {
                     catoexception("InvaildKitDelcare", "The kit could not be delacared!", line, linenumber, 300);
                 }
-                kit.Set(getBetween(line, "{\"", "\","), getBetween(line, ",\"", "\"}"));
             }
             else if (line.StartsWith("console.send.kit "))
             {
-                if (kit.Get(getBetween(line, "|", "|")) != String.Empty)
+                if (kit.Get(getBetween(line, "|", "|")) != null)
                 {
-                    Console.WriteLine(kit.Get(getBetween(line, "|", "|")));
+                        Console.WriteLine(kit.Get(getBetween(line, "|", "|")));
                 }
                 else
                 {
@@ -426,26 +423,26 @@ namespace cato
             {
                 try
                 {
-                    kit.Update(getBetween(line, "|", ","),getBetween(line, ",\"", "\"|"));
+                    kit.Set(getBetween(line, "|", ","),getBetween(line, ",\"", "\"|"));
                 }
                 catch (Exception)
                 {
                     catoexception("InvaildKit", "The kit "+ getBetween(line, "|", ",") +" wasn't found!", line, linenumber, 301);
                 }
-                kit.Update(getBetween(line, "|", ","), getBetween(line, ",\"", "\"|"));
+                kit.Set(getBetween(line, "|", ","), getBetween(line, ",\"", "\"|"));
             }
             else if (line.StartsWith("kit.set.from.input "))
             {
                 string value = Console.ReadLine();
                 try
                 {
-                    kit.Update(getBetween(line, "|", "|"), value);
+                    kit.Set(getBetween(line, "|", "|"), value);
                 }
                 catch (Exception)
                 {
                     catoexception("InvaildKit", "The kit "+ getBetween(line, "|", "|") +" wasn't found!", line, linenumber, 301);
                 }
-                kit.Update(getBetween(line, "|", "|"), value);
+                kit.Set(getBetween(line, "|", "|"), value);
             }
             else if (line.StartsWith("if "))
             {
