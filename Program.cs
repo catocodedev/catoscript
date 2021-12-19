@@ -383,7 +383,7 @@ namespace cato
             }
             else if (line.StartsWith("script.pause.keywait#"))
             {
-                Console.WriteLine("Script Paused! untill user presses a key");
+                Console.WriteLine("Script Paused! until user presses a key");
                 Console.ReadKey();
             }
             else if (line.StartsWith("script.quit#"))
