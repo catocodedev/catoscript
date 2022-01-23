@@ -98,6 +98,7 @@ namespace cato
                         Console.ForegroundColor = ConsoleColor.White;
                         System.Environment.Exit(0);
                         break;
+
                     case "run":
                         Console.WriteLine("Type the name/path of the file");
                         string tmp1 = Console.ReadLine();
@@ -113,17 +114,17 @@ namespace cato
                         Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
                         Console.WriteLine("Cato CLI ready!");
                         break;
-                    case "ver":
-                        Console.WriteLine(CatoData.version);
-                        break;
 
+                    case "ver":
                     case "version":
                         Console.WriteLine(CatoData.version);
                         break;
+
                     case "pur":
                         pur();
                         input = "";
                         break;
+
                     case "eval":
                         Console.Clear();
                         string test = Console.ReadLine(); ;
@@ -135,10 +136,12 @@ namespace cato
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
                         break;
+
                     case "clean":
                         Console.Clear();
                         Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
                         break;
+
                     case "help":
                         Console.WriteLine("----------CatoScript Help-------------------");
                         Console.WriteLine("run - Runs a .cato file");
@@ -148,6 +151,7 @@ namespace cato
                         Console.WriteLine("eval - test a line of code");
                         Console.WriteLine("--------------------------------------------");
                         break;
+
                     default:
                         Console.WriteLine("Unknown Command! Try help");
                         break;
@@ -454,21 +458,20 @@ namespace cato
                 catoexception("InvalidFunction", "\"This function was not recognized.\"", line, linenumber, 100);
             }
         }
-        static void Run(string file)
+        static void Run(string fileName)
         {
-            string fileExt = System.IO.Path.GetExtension(file);
-            if (file != null)
+            if (fileName != null)
             {
+                string fileExt = System.IO.Path.GetExtension(fileName);
                 if (fileExt == ".cato")
                 {
-                    if (File.Exists(file))
+                    if (File.Exists(fileName))
                     {
-                        string[] readText = File.ReadAllLines(file);
+                        string[] readText = File.ReadAllLines(fileName);
                         readText.Each((str, n) =>
                         {
                             Execute(str, n+1);
                         });
-
                     }
                     else
                     {
@@ -482,7 +485,7 @@ namespace cato
             }
             else
             {
-                Console.WriteLine("Please write a file name after run");
+                Console.WriteLine("Please write a file name.");
             }
         }
         static void Main(String[] args)
@@ -499,11 +502,6 @@ namespace cato
                     switch (args[0])
                     {
                         case "ver":
-                            Console.WriteLine(CatoData.version);
-                            Console.ReadKey();
-                            System.Environment.Exit(0);
-                            break;
-
                         case "version":
                             Console.WriteLine(CatoData.version);
                             Console.ReadKey();
@@ -517,9 +515,10 @@ namespace cato
                         case "":
                             cli();
                             break;
+
                         case "help":
                             Console.WriteLine("----------CatoScript Help-------------------");
-                            Console.WriteLine("run - Runs a .cato file");
+                            Console.WriteLine("<anything>.cato - Runs the file");
                             Console.WriteLine("version/ver - shows version of catoscript");
                             Console.WriteLine("pur - open PUR CLI");
                             Console.WriteLine("eval - test a line of code");
@@ -527,6 +526,7 @@ namespace cato
                             Console.ReadKey();
                             System.Environment.Exit(0);
                             break;
+
                         case "eval":
                             Console.Clear();
                             string test = Console.ReadLine(); ;
@@ -535,6 +535,7 @@ namespace cato
                             Console.ReadKey();
                             System.Environment.Exit(0);
                             break;
+
                         default:
                             if (args[0].Contains(".cato"))
                             {
