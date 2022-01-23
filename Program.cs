@@ -71,6 +71,12 @@ namespace cato
             System.Environment.Exit(errornum);
 
         }
+        static void start()
+        {
+            Console.WriteLine("Starting main.cato ...");
+            Console.WriteLine("================================================================");
+            Run("main.cato");
+        }
         static void cli()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -151,7 +157,9 @@ namespace cato
                         Console.WriteLine("eval - test a line of code");
                         Console.WriteLine("--------------------------------------------");
                         break;
-
+                    case "start":
+                        start();
+                        break;
                     default:
                         Console.WriteLine("Unknown Command! Try help");
                         break;
@@ -189,7 +197,19 @@ namespace cato
                         Console.WriteLine("quit - retrun to CatoScript CLI");
                         break;
                     case "init":
-                    // add code to make folders and files
+                        if (!System.IO.File.Exists("main.cato"))
+                        {
+                            Console.WriteLine("Creating main cato file");
+                            using (System.IO.FileStream fs = System.IO.File.Create("main.cato"))
+                            {
+                            
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("main file already exists!");
+                        }
+                        Console.WriteLine("INIT Done!");
                         break;
                     case "quit":
                         cli();
@@ -476,16 +496,22 @@ namespace cato
                     else
                     {
                         Console.WriteLine("File doesn't exist.");
+                        Console.ReadKey();
+                        System.Environment.Exit(404);
                     }
                 }
                 else
                 {
                     Console.WriteLine("File not a catoscript file");
+                    Console.ReadKey();
+                    System.Environment.Exit(405);
                 }
             }
             else
             {
                 Console.WriteLine("Please write a file name.");
+                Console.ReadKey();
+                System.Environment.Exit(101);
             }
         }
         static void Main(String[] args)
@@ -504,7 +530,6 @@ namespace cato
                         case "ver":
                         case "version":
                             Console.WriteLine(CatoData.version);
-                            Console.ReadKey();
                             System.Environment.Exit(0);
                             break;
 
@@ -515,6 +540,9 @@ namespace cato
                         case "":
                             cli();
                             break;
+                        case "start":
+                            start();
+                            break;
 
                         case "help":
                             Console.WriteLine("----------CatoScript Help-------------------");
@@ -523,7 +551,6 @@ namespace cato
                             Console.WriteLine("pur - open PUR CLI");
                             Console.WriteLine("eval - test a line of code");
                             Console.WriteLine("--------------------------------------------");
-                            Console.ReadKey();
                             System.Environment.Exit(0);
                             break;
 
@@ -531,8 +558,7 @@ namespace cato
                             Console.Clear();
                             string test = Console.ReadLine(); ;
                             Execute(test, 0);
-                            Console.WriteLine("==========EVAL RAN PRESS ANY KEY TO QUIT========");
-                            Console.ReadKey();
+                            Console.WriteLine("==========EVAL RAN!========");
                             System.Environment.Exit(0);
                             break;
 
@@ -543,7 +569,10 @@ namespace cato
                             }
                             else
                             {
-                                cli();
+                            Console.Clear();
+                            Console.WriteLine("Command "+ args[0] + " not found please use `cato help`");
+                            System.Environment.Exit(0);
+                            break;
                             }
                             break;
                     }
