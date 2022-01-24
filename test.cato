@@ -1,5 +1,0 @@
-@kit {"test","testvalue"}
-console.set.text.color |"Green"|
-console.send |"Hello World"|
-console.send.kit |test|
-script.pause.keywait#

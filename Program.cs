@@ -9,6 +9,12 @@ namespace cato
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
+    public enum CatoReg
+    {
+        Operation,
+        Peram,
+        Close
+    }
     public class Kits
     {
         private Dictionary<string, string> kits = new Dictionary<string, string>();
@@ -418,7 +424,7 @@ namespace cato
             }
             else if (line.StartsWith("get.OS#"))
             {
-                Console.WriteLine("The User OS is " + RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
+                Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
             }
             else if (line.StartsWith("@kit "))
             {
@@ -496,21 +502,18 @@ namespace cato
                     else
                     {
                         Console.WriteLine("File doesn't exist.");
-                        Console.ReadKey();
                         System.Environment.Exit(404);
                     }
                 }
                 else
                 {
                     Console.WriteLine("File not a catoscript file");
-                    Console.ReadKey();
                     System.Environment.Exit(405);
                 }
             }
             else
             {
                 Console.WriteLine("Please write a file name.");
-                Console.ReadKey();
                 System.Environment.Exit(101);
             }
         }
