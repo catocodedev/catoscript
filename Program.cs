@@ -9,12 +9,6 @@ namespace cato
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
-    public enum CatoReg
-    {
-        Operation,
-        Peram,
-        Close
-    }
     public class Kits
     {
         private Dictionary<string, string> kits = new Dictionary<string, string>();
@@ -226,264 +220,285 @@ namespace cato
                 }
             }   
         }
-        static void Execute(string line, int linenumber)
+        static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             var kit = new Kits();
-            if (line.StartsWith("%"))
+            switch (topop)
             {
-                // nothing because comment
-            }
-            else if (line.StartsWith("console.send "))
-            {
-                if (getBetween(line, "|\"", "\"|") != String.Empty)
-                {
-                    Console.WriteLine(getBetween(line, "|\"", "\"|"));
-                }
-                else
-                {
-                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
-                }
-            }
-            else if (line.StartsWith("console.clean#"))
-            {
-                Console.Clear();
-            }
-            else if (line.StartsWith("console.overwrite.up "))
-            {
-                if (getBetween(line, "|\"", "\"|") != String.Empty)
-                {
-                    Console.SetCursorPosition(0, Console.CursorTop -1);
-                    Console.WriteLine(getBetween(line, "|\"", "\"|"));
-                }
-                else
-                {
-                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
-                }
-            }
-            else if (line.StartsWith("console.object.load% "))
-            {
-                string text = "";
-                int delay = 0;
-                if (getBetween(line, "|\"", "\"") != String.Empty)
-                {
-                    text = getBetween(line, "|\"", "\"");
-                }
-                else
-                {
-                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.object can not send an empty string.\"", line, linenumber, 101);
-                }
-                try
-                {
-                    delay = Int32.Parse(getBetween(line, ",", "|"));
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, ",", "|") + " is invalid", line, linenumber, 102);
-                }
-                Console.WriteLine("");
-                for (int i = 0; i < 101; i++)
-                {
-                    Console.SetCursorPosition(0, Console.CursorTop -1);
-                    Console.WriteLine(text + i +"%");
-                    Thread.Sleep(delay);
-                }
-            }
-            else if (line.StartsWith("console.set.back.color "))
-            {
-                if (getBetween(line, "|\"", "\"|") != String.Empty)
-                {
-                    string backcolor = getBetween(line, "|\"", "\"|");
-                    if (Enum.TryParse(backcolor, out ConsoleColor background))
+                case "%":
+                    // nothing because comment
+                    break;
+                case "console":
+                    // parse console operation perams
+                    switch (subop)
                     {
-                        Console.BackgroundColor = background;
-                    }
-                    else
-                    {
-                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to "+getBetween(line, "|\"", "\"|")+"", line, linenumber, 400);
-                    }
-                }
-                else
-                {
-                    catoexception("NullReference", "Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
-                }
+                        case "send":
+                            if (perams != String.Empty)
+                            {
+                                Console.WriteLine();
+                            }
+                            else
+                            {
+                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                            }
+                            break;
+                        case "clean":
+                            Console.Clear();
+                            break;
+                        case "overwrite.up":
+                            if (perams != String.Empty)
+                            {
+                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                Console.WriteLine();
+                            }
+                            else
+                            {
+                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                            }
+                            break;
+                        case "object.load%":
+                            string text = "";
+                            int delay = 0;
+                            if (perams != String.Empty)
+                            {
+                                text = perams;
+                            }
+                            else
+                            {
+                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.object can not send an empty string.\"", op, opnum, 101);
+                            }
+                            try
+                            {
+                                delay = Int32.Parse(perams);
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " is invalid", op, opnum, 102);
+                            }
+                            Console.WriteLine("");
+                            for (int i = 0; i < 101; i++)
+                            {
+                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                Console.WriteLine(text + i + "%");
+                                Thread.Sleep(delay);
+                            }
+                            break;
+                        case "set.back.color":
+                            if (perams != String.Empty)
+                            {
+                                string backcolor = perams;
+                                if (Enum.TryParse(backcolor, out ConsoleColor background))
+                                {
+                                    Console.BackgroundColor = background;
+                                }
+                                else
+                                {
+                                    catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to " + perams + "", op, opnum, 400);
+                                }
+                            }
+                            else
+                            {
+                                catoexception("NullReference", "Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                            }
+                            break;
+                        case "set.text.color ":
+                            {
+                                if (perams != String.Empty)
+                                {
+                                    string textcolor = perams;
+                                    if (Enum.TryParse(textcolor, out ConsoleColor textc))
+                                    {
+                                        Console.ForegroundColor = textc;
+                                    }
+                                    else
+                                    {
+                                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to " + perams + "", op, opnum, 400);
+                                    }
+                                }
+                                else
+                                {
+                                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                                }
 
-            }
-            else if (line.StartsWith("console.set.text.color "))
-            {
-                if (getBetween(line, "|\"", "\"|") != String.Empty)
-                {
-                    string textcolor = getBetween(line, "|\"", "\"|");
-                    if (Enum.TryParse(textcolor, out ConsoleColor textc))
-                    {
-                        Console.ForegroundColor = textc;
+                            }
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of console", op, opnum, 104);
+                            break;
                     }
-                    else
+                    break;
+                case "debug":
+                    switch (subop)
                     {
-                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to "+getBetween(line, "|\"", "\"|")+"", line, linenumber, 400);
+                        case "throw":
+                            catoexception("UserGenerated", perams, op, opnum, 200);
+                            break;
+                        case "get.OS":
+                            Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of debug", op, opnum, 104);
+                            break;
                     }
-                }
-                else
-                {
-                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", line, linenumber, 101);
-                }
-
-            }
-            else if (line.StartsWith("debug.throw "))
-            {
-                catoexception("UserGenerated", getBetween(line, "|\"", "\"|"), line, linenumber, 200);
-            }
-            else if (line.StartsWith("random.num "))
-            {
-                Random engine = new();
-                //this should grab |min:max|
-                try
-                {
-                    int min = Int32.Parse(getBetween(line, "|", "~"));
-                    int max = Int32.Parse(getBetween(line, "~", "|"));
-                    int value = engine.Next(min, max);
-                    Console.WriteLine(value);
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, "|", "~") + " & " + getBetween(line, "~", "|") + " are invalid", line, linenumber, 102);
-                }
-            }
-            else if (line.StartsWith("math.add "))
-            {
-                try
-                {
-                    int num1 = Int32.Parse(getBetween(line, "|", "+"));
-                    int num2 = Int32.Parse(getBetween(line, "+", "|"));
-                    Console.WriteLine(num1 + num2);
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, "|", "+") + " & " + getBetween(line, "+", "|") + " are invalid", line, linenumber, 102);
-                }
-            }
-            else if (line.StartsWith("math.sub "))
-            {
-                try
-                {
-                    int num1 = Int32.Parse(getBetween(line, "|", "-"));
-                    int num2 = Int32.Parse(getBetween(line, "-", "|"));
-                    Console.WriteLine(num1 - num2);
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, "|", "-") + " & " + getBetween(line, "-", "|") + " are invalid", line, linenumber, 102);
-                }
-            }
-            else if (line.StartsWith("math.multi "))
-            {
-                try
-                {
-                    int num1 = Int32.Parse(getBetween(line, "|", "*"));
-                    int num2 = Int32.Parse(getBetween(line, "*", "|"));
-                    Console.WriteLine(num1 * num2);
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, "|", "*") + " & " + getBetween(line, "*", "|") + " are invalid", line, linenumber, 102);
-                }
-            }
-            else if (line.StartsWith("math.divide "))
-            {
-                try
-                {
-                    int num1 = Int32.Parse(getBetween(line, "|", "/"));
-                    int num2 = Int32.Parse(getBetween(line, "/", "|"));
-                    Console.WriteLine(num1 / num2);
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, "|", "/") + " & " + getBetween(line, "/", "|") + " are invalid", line, linenumber, 102);
-                }
-            }
-            else if (line.StartsWith("script.pause.time "))
-            {
-                try
-                {
-                    Thread.Sleep(Int32.Parse(getBetween(line, "|", "|")));
-                }
-                catch (FormatException)
-                {
-                    catoexception("InvalidInput", getBetween(line, "|", "|") + " is invalid", line, linenumber, 102);
-                }
-            }
-            else if (line.StartsWith("script.pause.keywait#"))
-            {
-                Console.WriteLine("Script Paused! until user presses a key");
-                Console.ReadKey();
-            }
-            else if (line.StartsWith("script.quit#"))
-            {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
-                System.Environment.Exit(0);
-            }
-            else if (line.StartsWith("get.OS#"))
-            {
-                Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
-            }
-            else if (line.StartsWith("@kit "))
-            {
-                try
-                {
-                    kit.Set(getBetween(line, "{", ","), getBetween(line, ",\"", "\"}"));
-                    Console.WriteLine(getBetween(line, "{", ",") + " | " + getBetween(line, ",\"", "\"}"));
-                }
-                catch (Exception)
-                {
-                    catoexception("InvaildKitDelcare", "The kit could not be delacared!", line, linenumber, 300);
-                }
-            }
-            else if (line.StartsWith("console.send.kit "))
-            {
-                if (kit.Get(getBetween(line, "|", "|")) != null)
-                {
-                        Console.WriteLine(kit.Get(getBetween(line, "|", "|")));
-                }
-                else
-                {
-                    catoexception("InvaildKit", "The kit "+ getBetween(line, "|", "|") +" wasn't found!", line, linenumber, 301);
-                }
-            }
-            else if (line.StartsWith("kit.set "))
-            {
-                try
-                {
-                    kit.Set(getBetween(line, "|", ","),getBetween(line, ",\"", "\"|"));
-                }
-                catch (Exception)
-                {
-                    catoexception("InvaildKit", "The kit "+ getBetween(line, "|", ",") +" wasn't found!", line, linenumber, 301);
-                }
-                kit.Set(getBetween(line, "|", ","), getBetween(line, ",\"", "\"|"));
-            }
-            else if (line.StartsWith("kit.set.from.input "))
-            {
-                string value = Console.ReadLine();
-                try
-                {
-                    kit.Set(getBetween(line, "|", "|"), value);
-                }
-                catch (Exception)
-                {
-                    catoexception("InvaildKit", "The kit "+ getBetween(line, "|", "|") +" wasn't found!", line, linenumber, 301);
-                }
-                kit.Set(getBetween(line, "|", "|"), value);
-            }
-            else if (line.StartsWith("if "))
-            {
-                string test1 = getBetween(line, "|\"", "\" ->");
-                string test2 = getBetween(line, "-> \"", "\"|");
-            }
-            else
-            {
-                catoexception("InvalidFunction", "\"This function was not recognized.\"", line, linenumber, 100);
-            }
+                    break;
+                case "random":
+                    switch (subop)
+                    {
+                        case "num":
+                            Random engine = new();
+                            //this should grab |min:max|
+                            try
+                            {
+                                int min = Int32.Parse(perams);
+                                int max = Int32.Parse(perams);
+                                int value = engine.Next(min, max);
+                                Console.WriteLine(value);
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                            }
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of random", op, opnum, 104);
+                            break;
+                    }
+                    break;
+                case "math":
+                    // add math peram parser
+                    switch (subop)
+                    {
+                        case "add":
+                            try
+                            {
+                                int num1 = Int32.Parse(perams);
+                                int num2 = Int32.Parse(perams);
+                                Console.WriteLine(num1 + num2);
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                            }
+                            break;
+                        case "sub":
+                            try
+                            {
+                                int num1 = Int32.Parse(perams);
+                                int num2 = Int32.Parse(perams);
+                                Console.WriteLine(num1 - num2);
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                            }
+                            break;
+                        case "multi":
+                            try
+                            {
+                                int num1 = Int32.Parse(perams);
+                                int num2 = Int32.Parse(perams);
+                                Console.WriteLine(num1 * num2);
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                            }
+                            break;
+                        case "divide":
+                            try
+                            {
+                                int num1 = Int32.Parse(perams);
+                                int num2 = Int32.Parse(perams);
+                                Console.WriteLine(num1 / num2);
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                            }
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of math", op, opnum, 104);
+                            break;
+                    }
+                    break;
+                case "script":
+                    // script parser
+                    switch (subop)
+                    {
+                        case "pause.time":
+                            try
+                            {
+                                Thread.Sleep(Int32.Parse(perams));
+                            }
+                            catch (FormatException)
+                            {
+                                catoexception("InvalidInput", perams + " is invalid", op, opnum, 102);
+                            }
+                            break;
+                        case "pause.keywait":
+                            Console.WriteLine("Script Paused! until user presses a key");
+                            Console.ReadKey();
+                            break;
+                        case "quit":
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            System.Environment.Exit(201);
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of script", op, opnum, 104);
+                            break;
+                    }
+                    break;
+                case "@kit":
+                    //@kit parser
+                    try
+                    {
+                        kit.Set(perams, perams);
+                    }
+                    catch (Exception)
+                    {
+                        catoexception("InvaildKitDelcare", "The kit could not be delacared!", op, opnum, 300);
+                    }
+                    break;
+                case "kit":
+                    //kit parser
+                    switch (subop)
+                    {
+                        case "set":
+                            if (subop.Contains("frominput"))
+                            {
+                                string value = Console.ReadLine();
+                                try
+                                {
+                                    kit.Set(perams, value);
+                                }
+                                catch (Exception)
+                                {
+                                    catoexception("InvaildKit", "The kit " + perams + " wasn't found!", op, opnum, 301);
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    kit.Set(perams, perams);
+                                }
+                                catch (Exception)
+                                {
+                                    catoexception("InvaildKit", "The kit " + perams + " wasn't found!", op, opnum, 301);
+                                }
+                            }
+                            break;
+                    }
+                    break;
+                case "if":
+                    //to be made
+                    break;
+            default:
+                    catoexception("InvalidOperation", "\"This Operation was not recognized.\"", op, opnum, 100);
+            break;
         }
+    }
         static void Run(string fileName)
         {
             if (fileName != null)
@@ -537,7 +552,14 @@ namespace cato
                             break;
 
                         case "pur":
-                            pur();
+                            if (args[0] != null)
+                            {
+                                // add code to run pur cmds
+                            }
+                            else
+                            {
+                                pur();
+                            }
                             break;
 
                         case "":
@@ -586,7 +608,6 @@ namespace cato
                     Console.Clear();
                     Console.WriteLine("ERROR CAUGHT!" + err);
                 }
-                Console.Clear();
                 Console.WriteLine("Execution ended! Press any key to close CatoScript...");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.ReadKey();
