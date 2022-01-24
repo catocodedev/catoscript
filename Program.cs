@@ -59,11 +59,11 @@ namespace cato
                 return string.Empty;
             }
         }
-        static void catoexception(string type, string info, string line, int linenum, int errornum)
+        static void catoexception(string type, string info, string op, int opnum, int errornum)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
-            Console.WriteLine(type +"Execption: "+ info + " | " + line + "(line:"+ linenum +")");
+            Console.WriteLine(type +"Execption: "+ info + " | " + op + "(line:"+ opnum +")");
             Console.WriteLine("ERROR CODE : " + errornum);
             Console.ReadKey();
             Console.ForegroundColor = ConsoleColor.White;
@@ -75,7 +75,17 @@ namespace cato
         {
             Console.WriteLine("Starting main.cato ...");
             Console.WriteLine("================================================================");
-            Run("main.cato");
+            RunFile("main.cato");
+        }
+        static void Run(string run, int n)
+        {
+
+            string op = "";
+            string topop = "";
+            string subop = "";
+            string perams = "";
+            int opnum = 0;
+            Execute(op, topop, subop, perams, n);
         }
         static void cli()
         {
@@ -111,7 +121,7 @@ namespace cato
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.Clear();
-                        Run(tmp1);
+                        RunFile(tmp1);
                         Console.WriteLine("Cato File finnished running. Press any key to retrun to CLI");
                         Console.ReadKey();
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -133,8 +143,8 @@ namespace cato
 
                     case "eval":
                         Console.Clear();
-                        string test = Console.ReadLine(); ;
-                        Execute(test, 0);
+                        string eval = Console.ReadLine();
+                        Run(eval, 0);
                         Console.WriteLine("==========EVAL RAN PRESS ANY KEY TO RETURN TO CLI========");
                         Console.ReadKey();
                         Console.Clear();
@@ -499,7 +509,7 @@ namespace cato
             break;
         }
     }
-        static void Run(string fileName)
+        static void RunFile(string fileName)
         {
             if (fileName != null)
             {
@@ -511,7 +521,7 @@ namespace cato
                         string[] readText = File.ReadAllLines(fileName);
                         readText.Each((str, n) =>
                         {
-                            Execute(str, n+1);
+                            Run(str, n);
                         });
                     }
                     else
@@ -572,6 +582,7 @@ namespace cato
                         case "help":
                             Console.WriteLine("----------CatoScript Help-------------------");
                             Console.WriteLine("<anything>.cato - Runs the file");
+                            Console.WriteLine("run <anything>.cato - Runs the file");
                             Console.WriteLine("version/ver - shows version of catoscript");
                             Console.WriteLine("pur - open PUR CLI");
                             Console.WriteLine("eval - test a line of code");
@@ -581,16 +592,33 @@ namespace cato
 
                         case "eval":
                             Console.Clear();
-                            string test = Console.ReadLine(); ;
-                            Execute(test, 0);
+                            string eval = Console.ReadLine(); ;
+                            string op = "";
+                            string topop = "";
+                            string subop = "";
+                            string perams = "";
+                            int opnum = 0;
+                            Execute(op, topop, subop, perams, opnum);
                             Console.WriteLine("==========EVAL RAN!========");
                             System.Environment.Exit(0);
                             break;
-
+                        case "run":
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            RunFile(args[1]);
+                            Console.WriteLine("Cato File finnished running. Press any key to retrun to CLI");
+                            Console.ReadKey();
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
+                            Console.WriteLine("Cato CLI ready!");
+                            break;
                         default:
                             if (args[0].Contains(".cato"))
                             {
-                                Run(args[0]);
+                                RunFile(args[0]);
                             }
                             else
                             {
