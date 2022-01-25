@@ -77,15 +77,68 @@ namespace cato
             Console.WriteLine("================================================================");
             RunFile("main.cato");
         }
-        static void Run(string run, int n)
+        static void Run(string run)
         {
-
-            string op = "";
+            string tmp = "tmp";
             string topop = "";
             string subop = "";
             string perams = "";
             int opnum = 0;
-            Execute(op, topop, subop, perams, n);
+            string[] subs = run.Split(';');
+            foreach (string sub in subs)
+            {
+                opnum++;
+                if (sub.StartsWith("%"))
+                {
+                    topop = "%";
+                    subop = null;
+                    perams = null;
+                }
+                else {
+                    try
+                    {
+                        var pieces = sub.Split(new[] { '.' }, 2);
+                        topop = pieces[0];
+                        subop = pieces[1].GetUntilOrEmpty(" ");
+                    }
+                    catch (Exception) {
+                        catoexception("OperationParseFail", "Run Parser could not parse the Operation to run! Please check the operation and refer to docs.", sub, opnum, 600);
+
+                    }
+                    if (sub.EndsWith("#"))
+                {
+                    perams = "#";
+                }
+                else
+                {
+                        try
+                        {
+                            var pies = sub.Split(new[] { '|' }, 2);
+                            perams = pies[1].GetUntilOrEmpty("|");
+                        }
+                        catch (Exception)
+                        {
+                            catoexception("PeramParseFail", "Run Parser could not parse perams to run! Please check the operation and refer to docs.", perams, opnum, 600);
+                        }
+                    }
+            }
+                // Console.WriteLine(topop + " | " + subop + " | " + perams);
+                Execute(sub, topop, subop, perams, opnum);
+            }
+        }
+        public static string GetUntilOrEmpty(this string text, string stopAt)
+        {
+            if (!String.IsNullOrWhiteSpace(text))
+            {
+                int charLocation = text.IndexOf(stopAt, StringComparison.Ordinal);
+
+                if (charLocation > 0)
+                {
+                    return text.Substring(0, charLocation);
+                }
+            }
+
+            return String.Empty;
         }
         static void cli()
         {
@@ -144,7 +197,7 @@ namespace cato
                     case "eval":
                         Console.Clear();
                         string eval = Console.ReadLine();
-                        Run(eval, 0);
+                        Run(eval);
                         Console.WriteLine("==========EVAL RAN PRESS ANY KEY TO RETURN TO CLI========");
                         Console.ReadKey();
                         Console.Clear();
@@ -233,19 +286,27 @@ namespace cato
         static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             var kit = new Kits();
+            string parsed = null;
             switch (topop)
             {
                 case "%":
                     // nothing because comment
                     break;
                 case "console":
-                    // parse console operation perams
+                    
+                    try
+                    {
+                     parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                    }catch (Exception ex)
+                    {
+                        catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                    }
                     switch (subop)
                     {
                         case "send":
-                            if (perams != String.Empty)
+                            if (parsed != String.Empty)
                             {
-                                Console.WriteLine();
+                                Console.WriteLine(parsed);
                             }
                             else
                             {
@@ -519,10 +580,12 @@ namespace cato
                     if (File.Exists(fileName))
                     {
                         string[] readText = File.ReadAllLines(fileName);
+                        string whole = "";
                         readText.Each((str, n) =>
                         {
-                            Run(str, n);
+                            whole = whole + str; 
                         });
+                        Run(whole);
                     }
                     else
                     {
