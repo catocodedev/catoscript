@@ -399,6 +399,17 @@ namespace cato
 
                             }
                             break;
+                        case "wait.key":
+                            if (parsed != String.Empty)
+                            {
+                                Console.WriteLine(parsed);
+                            }
+                            else
+                            {
+                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                            }
+                            Console.ReadKey();
+                            break;
                         default:
                             catoexception("Invaild SubOperation", subop + " Is not a vaild SubOperation of console", op, opnum, 104);
                             break;
@@ -603,7 +614,7 @@ namespace cato
                         case "run":
                                 try
                             {
-
+                                // the /c will quit
                                 System.Diagnostics.ProcessStartInfo procStartInfo =
                                     new System.Diagnostics.ProcessStartInfo("cmd", "/c " + parsed);
 
