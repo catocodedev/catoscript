@@ -63,7 +63,7 @@ namespace cato
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
-            Console.WriteLine(type +"Execption: "+ info + " | " + op + "(line:"+ opnum +")");
+            Console.WriteLine(type +"Execption: "+ info + " | " + op + "(Operation:"+ opnum +")");
             Console.WriteLine("ERROR CODE : " + errornum);
             Console.ReadKey();
             Console.ForegroundColor = ConsoleColor.White;
@@ -326,7 +326,7 @@ namespace cato
                             if (parsed != String.Empty)
                             {
                                 Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                Console.WriteLine();
+                                Console.WriteLine(parsed);
                             }
                             else
                             {
@@ -514,7 +514,7 @@ namespace cato
                     }
                     break;
                 case "script":
-                    // script parser
+                    // dosen't need parser rn
                     switch (subop)
                     {
                         case "pause.time":
@@ -646,7 +646,7 @@ namespace cato
                             break;
 
                         case "pur":
-                            if (args[0] != null)
+                            if (args[1] != null)
                             {
                                 // add code to run pur cmds
                             }
@@ -676,13 +676,8 @@ namespace cato
 
                         case "eval":
                             Console.Clear();
-                            string eval = Console.ReadLine(); ;
-                            string op = "";
-                            string topop = "";
-                            string subop = "";
-                            string perams = "";
-                            int opnum = 0;
-                            Execute(op, topop, subop, perams, opnum);
+                            string eval = Console.ReadLine();
+                            Run(eval);
                             Console.WriteLine("==========EVAL RAN!========");
                             System.Environment.Exit(0);
                             break;
