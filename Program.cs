@@ -293,13 +293,19 @@ namespace cato
                     // nothing because comment
                     break;
                 case "console":
-                    
-                    try
+                    if (!perams.EndsWith("#"))
                     {
-                     parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                    }catch (Exception ex)
+                        try
+                    {
+                            parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                        }catch (Exception ex)
                     {
                         catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                    }
+                    }
+                    else
+                    {
+                        parsed = "#";
                     }
                     switch (subop)
                     {
@@ -317,7 +323,7 @@ namespace cato
                             Console.Clear();
                             break;
                         case "overwrite.up":
-                            if (perams != String.Empty)
+                            if (parsed != String.Empty)
                             {
                                 Console.SetCursorPosition(0, Console.CursorTop - 1);
                                 Console.WriteLine();
@@ -330,9 +336,9 @@ namespace cato
                         case "object.load%":
                             string text = "";
                             int delay = 0;
-                            if (perams != String.Empty)
+                            if (parsed != String.Empty)
                             {
-                                text = perams;
+                                text = parsed;
                             }
                             else
                             {
@@ -355,9 +361,9 @@ namespace cato
                             }
                             break;
                         case "set.back.color":
-                            if (perams != String.Empty)
+                            if (parsed != String.Empty)
                             {
-                                string backcolor = perams;
+                                string backcolor = parsed;
                                 if (Enum.TryParse(backcolor, out ConsoleColor background))
                                 {
                                     Console.BackgroundColor = background;
@@ -372,11 +378,11 @@ namespace cato
                                 catoexception("NullReference", "Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
                             }
                             break;
-                        case "set.text.color ":
+                        case "set.text.color":
                             {
-                                if (perams != String.Empty)
+                                if (parsed != String.Empty)
                                 {
-                                    string textcolor = perams;
+                                    string textcolor = parsed;
                                     if (Enum.TryParse(textcolor, out ConsoleColor textc))
                                     {
                                         Console.ForegroundColor = textc;
@@ -394,21 +400,36 @@ namespace cato
                             }
                             break;
                         default:
-                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of console", op, opnum, 104);
+                            catoexception("Invaild SubOperation", subop + " Is not a vaild SubOperation of console", op, opnum, 104);
                             break;
                     }
                     break;
                 case "debug":
+                    if (!perams.EndsWith("#"))
+                    {
+                        try
+                        {
+                            parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                        }
+                        catch (Exception ex)
+                        {
+                            catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                        }
+                    }
+                    else
+                    {
+                        parsed = "#";
+                    }
                     switch (subop)
                     {
                         case "throw":
-                            catoexception("UserGenerated", perams, op, opnum, 200);
+                            catoexception("UserGenerated", parsed, op, opnum, 200);
                             break;
                         case "get.OS":
                             Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
                             break;
                         default:
-                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of debug", op, opnum, 104);
+                            catoexception("Invaild SubOperation", subop + " Is not a vaild SubOperation of debug", op, opnum, 104);
                             break;
                     }
                     break;
