@@ -286,33 +286,43 @@ namespace cato
         static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             var kit = new Kits();
-            string parsed = null;
-            switch (topop)
+            // generic parser
+            var parsed = perams.Split(new[] { ',' });
+            try
+            {
+                parsed = perams.Split(new[] { ',' });
+
+            }
+            catch (Exception ex)
+                    {
+                        catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                    }
+            if (perams.EndsWith("#"))
+            {
+                parsed[0] = "#";
+            }
+                switch (topop)
             {
                 case "%":
                     // nothing because comment
                     break;
                 case "console":
-                    if (!perams.EndsWith("#"))
+                    var text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                    try
                     {
-                        try
-                    {
-                            parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                        }catch (Exception ex)
+                       text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                    }
+                    catch (Exception ex)
                     {
                         catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
                     }
-                    }
-                    else
-                    {
-                        parsed = "#";
-                    }
+
                     switch (subop)
                     {
                         case "send":
-                            if (parsed != String.Empty)
+                            if (text != String.Empty)
                             {
-                                Console.WriteLine(parsed);
+                                Console.WriteLine(text);
                             }
                             else
                             {
@@ -323,10 +333,10 @@ namespace cato
                             Console.Clear();
                             break;
                         case "overwrite.up":
-                            if (parsed != String.Empty)
+                            if (text != String.Empty)
                             {
                                 Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                Console.WriteLine(parsed);
+                                Console.WriteLine(text);
                             }
                             else
                             {
@@ -334,36 +344,35 @@ namespace cato
                             }
                             break;
                         case "object.load%":
-                            string text = "";
-                            int delay = 0;
-                            if (parsed != String.Empty)
+                            int delay = Int32.Parse(parsed[1]);
+                            if (text != String.Empty)
                             {
-                                text = parsed;
-                            }
-                            else
-                            {
-                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.object can not send an empty string.\"", op, opnum, 101);
-                            }
                             try
                             {
-                                delay = Int32.Parse(perams);
+                                delay = Int32.Parse(parsed[1]);
                             }
                             catch (FormatException)
                             {
                                 catoexception("InvalidInput", perams + " is invalid", op, opnum, 102);
                             }
-                            Console.WriteLine("");
+                             Console.WriteLine("");
                             for (int i = 0; i < 101; i++)
                             {
                                 Console.SetCursorPosition(0, Console.CursorTop - 1);
                                 Console.WriteLine(text + i + "%");
                                 Thread.Sleep(delay);
                             }
+                            }
+                            else
+                            {
+                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.object can not send an empty string.\"", op, opnum, 101);
+                            }
+                            
                             break;
                         case "set.back.color":
-                            if (parsed != String.Empty)
+                            if (text != String.Empty)
                             {
-                                string backcolor = parsed;
+                                string backcolor = text;
                                 if (Enum.TryParse(backcolor, out ConsoleColor background))
                                 {
                                     Console.BackgroundColor = background;
@@ -380,10 +389,9 @@ namespace cato
                             break;
                         case "set.text.color":
                             {
-                                if (parsed != String.Empty)
+                                if (text != String.Empty)
                                 {
-                                    string textcolor = parsed;
-                                    if (Enum.TryParse(textcolor, out ConsoleColor textc))
+                                    if (Enum.TryParse(text, out ConsoleColor textc))
                                     {
                                         Console.ForegroundColor = textc;
                                     }
@@ -400,9 +408,9 @@ namespace cato
                             }
                             break;
                         case "wait.key":
-                            if (parsed != String.Empty)
+                            if (text != String.Empty)
                             {
-                                Console.WriteLine(parsed);
+                                Console.WriteLine(text);
                             }
                             else
                             {
@@ -416,25 +424,11 @@ namespace cato
                     }
                     break;
                 case "debug":
-                    if (!perams.EndsWith("#"))
-                    {
-                        try
-                        {
-                            parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                        }
-                        catch (Exception ex)
-                        {
-                            catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
-                        }
-                    }
-                    else
-                    {
-                        parsed = "#";
-                    }
+                    text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                     switch (subop)
                     {
                         case "throw":
-                            catoexception("UserGenerated", parsed, op, opnum, 200);
+                            catoexception("UserGenerated", text, op, opnum, 200);
                             break;
                         case "get.OS":
                             Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
@@ -452,14 +446,14 @@ namespace cato
                             //this should grab |min:max|
                             try
                             {
-                                int min = Int32.Parse(perams);
-                                int max = Int32.Parse(perams);
+                                int min = Int32.Parse(parsed[0]);
+                                int max = Int32.Parse(parsed[1]);
                                 int value = engine.Next(min, max);
                                 Console.WriteLine(value);
                             }
                             catch (FormatException)
                             {
-                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                                catoexception("InvalidInput", parsed[0] + "|" + parsed[1] + " are invalid", op, opnum, 102);
                             }
                             break;
                         default:
@@ -468,26 +462,25 @@ namespace cato
                     }
                     break;
                 case "math":
-                    // add math peram parser
                     switch (subop)
                     {
                         case "add":
                             try
                             {
-                                int num1 = Int32.Parse(perams);
-                                int num2 = Int32.Parse(perams);
+                                int num1 = Int32.Parse(parsed[0]);
+                                int num2 = Int32.Parse(parsed[1]);
                                 Console.WriteLine(num1 + num2);
                             }
                             catch (FormatException)
                             {
-                                catoexception("InvalidInput", perams + " are invalid", op, opnum, 102);
+                                catoexception("InvalidInput", parsed[0] + "|" + parsed[1] + " are invalid", op, opnum, 102);
                             }
                             break;
                         case "sub":
                             try
                             {
-                                int num1 = Int32.Parse(perams);
-                                int num2 = Int32.Parse(perams);
+                                int num1 = Int32.Parse(parsed[0]);
+                                int num2 = Int32.Parse(parsed[1]);
                                 Console.WriteLine(num1 - num2);
                             }
                             catch (FormatException)
@@ -498,8 +491,8 @@ namespace cato
                         case "multi":
                             try
                             {
-                                int num1 = Int32.Parse(perams);
-                                int num2 = Int32.Parse(perams);
+                                int num1 = Int32.Parse(parsed[0]);
+                                int num2 = Int32.Parse(parsed[1]);
                                 Console.WriteLine(num1 * num2);
                             }
                             catch (FormatException)
@@ -510,8 +503,8 @@ namespace cato
                         case "divide":
                             try
                             {
-                                int num1 = Int32.Parse(perams);
-                                int num2 = Int32.Parse(perams);
+                                int num1 = Int32.Parse(parsed[0]);
+                                int num2 = Int32.Parse(parsed[1]);
                                 Console.WriteLine(num1 / num2);
                             }
                             catch (FormatException)
@@ -531,7 +524,7 @@ namespace cato
                         case "pause.time":
                             try
                             {
-                                Thread.Sleep(Int32.Parse(perams));
+                                Thread.Sleep(Int32.Parse(parsed[0]));
                             }
                             catch (FormatException)
                             {
@@ -598,11 +591,12 @@ namespace cato
                     //to be made
                     break;
                 case "sys":
+                    text = "tmp";
                     if (!perams.EndsWith("#"))
                     {
                         try
                         {
-                            parsed = perams.Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                         }
                         catch (Exception ex)
                         {
@@ -616,8 +610,7 @@ namespace cato
                             {
                                 // the /c will quit
                                 System.Diagnostics.ProcessStartInfo procStartInfo =
-                                    new System.Diagnostics.ProcessStartInfo("cmd", "/c " + parsed);
-
+                                    new System.Diagnostics.ProcessStartInfo("cmd", "/c " + text);
                                 // The following commands are needed to redirect the standard output.
                                 // This means that it will be redirected to the Process.StandardOutput StreamReader.
                                 procStartInfo.RedirectStandardOutput = true;
