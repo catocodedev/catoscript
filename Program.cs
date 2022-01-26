@@ -91,8 +91,8 @@ namespace cato
                 if (sub.StartsWith("%"))
                 {
                     topop = "%";
-                    subop = null;
-                    perams = null;
+                    subop = "%";
+                    perams = "%";
                 }
                 else {
                     try
@@ -101,9 +101,9 @@ namespace cato
                         topop = pieces[0];
                         subop = pieces[1].GetUntilOrEmpty(" ");
                     }
-                    catch (Exception) {
+                    catch (Exception ex) {
                         catoexception("OperationParseFail", "Run Parser could not parse the Operation to run! Please check the operation and refer to docs.", sub, opnum, 600);
-
+                        Console.WriteLine(ex);
                     }
                     if (sub.EndsWith("#"))
                 {
@@ -297,7 +297,7 @@ namespace cato
                     {
                         catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
                     }
-            if (perams.EndsWith("#"))
+            if (perams.StartsWith("#"))
             {
                 parsed[0] = "#";
             }
@@ -307,16 +307,18 @@ namespace cato
                     // nothing because comment
                     break;
                 case "console":
-                    var text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                    try
+                    var text = "";
+                    if (parsed[0] != "#")
                     {
-                       text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                        try
+                        {
+                            text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                        }
+                        catch (Exception ex)
+                        {
+                            catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
-                    }
-
                     switch (subop)
                     {
                         case "send":
@@ -633,6 +635,30 @@ namespace cato
                             break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of sys", op, opnum, 104);
+                            break;
+                    }
+                    break;
+                case "file":
+                    var file = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                    switch (subop)
+                    {
+                        case "dump":
+                            if (File.Exists(file))
+                            {
+                                string[] readText = File.ReadAllLines(file);
+                                string whole = "";
+                                readText.Each((str, n) =>
+                                {
+                                    Console.WriteLine(str);
+                                });
+                            }
+                            else
+                            {
+                                catoexception("FileError", file + " could not be found!", op, opnum, 404);
+                            }
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of file", op, opnum, 104);
                             break;
                     }
                     break;
