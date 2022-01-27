@@ -84,12 +84,14 @@ namespace cato
             string topop = "";
             string subop = "";
             string perams = "";
+            string subo = "";
             int opnum = 0;
             string[] subs = run.Split(';');
             foreach (string sub in subs)
             {
+                subo = sub.Trim();
                 opnum++;
-                if (sub.StartsWith("%") || sub == String.Empty)
+                if (subo.StartsWith("%") || subo == String.Empty)
                 { 
                     topop = "%";
                     subop = "%";
@@ -98,15 +100,15 @@ namespace cato
                 else {
                     try
                     {
-                        var pieces = sub.Split(new[] { '.' }, 2);
+                        var pieces = subo.Split(new[] { '.' }, 2);
                         topop = pieces[0];
                         subop = pieces[1].GetUntilOrEmpty(" ");
                     }
                     catch (Exception ex) {
-                        catoexception("OperationParseFail", "Run Parser could not parse the Operation to run! Please check the operation and refer to docs.", sub, opnum, 600);
+                        catoexception("OperationParseFail", "Run Parser could not parse the Operation to run! Please check the operation and refer to docs.", subo, opnum, 600);
                         Console.WriteLine(ex);
                     }
-                    if (sub.EndsWith("#"))
+                    if (subo.EndsWith("#"))
                 {
                     perams = "#";
                 }
@@ -114,7 +116,7 @@ namespace cato
                 {
                         try
                         {
-                            var pies = sub.Split(new[] { '|' }, 2);
+                            var pies = subo.Split(new[] { '|' }, 2);
                             perams = pies[1].GetUntilOrEmpty("|");
                         }
                         catch (Exception)
@@ -124,7 +126,7 @@ namespace cato
                     }
             }
                 // Console.WriteLine(topop + " | " + subop + " | " + perams);
-                Execute(sub, topop, subop, perams, opnum);
+                Execute(subo, topop, subop, perams, opnum);
             }
         }
         public static string GetUntilOrEmpty(this string text, string stopAt)
