@@ -65,6 +65,7 @@ namespace cato
             Console.Clear();
             Console.WriteLine(type +"Execption: "+ info + " | " + op + "(Operation:"+ opnum +")");
             Console.WriteLine("ERROR CODE : " + errornum);
+            Console.WriteLine("more info https://github.com/catoscript/cato/wiki/Errors#" + errornum);
             Console.ReadKey();
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
