@@ -89,8 +89,8 @@ namespace cato
             foreach (string sub in subs)
             {
                 opnum++;
-                if (sub.StartsWith("%"))
-                {
+                if (sub.StartsWith("%") || sub == String.Empty)
+                { 
                     topop = "%";
                     subop = "%";
                     perams = "%";
