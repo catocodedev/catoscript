@@ -1,2 +1,2 @@
-%The line below prints Hello World to the console. This is a comment
+%The line below prints Hello World to the console. This is a comment;
 console.send |"Hello World!"|

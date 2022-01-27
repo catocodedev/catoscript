@@ -288,15 +288,18 @@ namespace cato
             var kit = new Kits();
             // generic parser
             var parsed = perams.Split(new[] { ',' });
-            try
+            if (!perams.Contains("("))
             {
-                parsed = perams.Split(new[] { ',' });
+                try
+                {
+                    parsed = perams.Split(new[] { ',' });
 
+                }
+                catch (Exception ex)
+                {
+                    catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                }
             }
-            catch (Exception ex)
-                    {
-                        catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
-                    }
             if (perams.StartsWith("#"))
             {
                 parsed[0] = "#";
@@ -308,18 +311,21 @@ namespace cato
                     break;
                 case "console":
                     var text = "";
-                    if (parsed[0] != "#")
+                    if (!subop.Contains("object"))
                     {
-                        try
+                        if (parsed[0] != "#")
                         {
-                            text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                        }
-                        catch (Exception ex)
-                        {
-                            catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                            try
+                            {
+                                text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                            }
                         }
                     }
-                    switch (subop)
+                        switch (subop)
                     {
                         case "send":
                             if (text != String.Empty)
@@ -345,29 +351,41 @@ namespace cato
                                 catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
                             }
                             break;
-                        case "object.load%":
-                            int delay = Int32.Parse(parsed[1]);
-                            if (text != String.Empty)
+                        case "object.load":
+                            // object parser
+                            var meowobject = perams.Split(new string[] { "(",")" }, 3, StringSplitOptions.None)[1];
+                            string[] subs = meowobject.Split(',');
+                            int objnum = 0;
+                            foreach (string s in subs)
+                            {
+                                parsed[objnum] = s;
+                                objnum++;
+                            }
+                            if (objnum != 3){
+                                catoexception("ObjectError", "wrong amout of properties was set for object load", op, opnum, 802);
+                            }
+                            int delay = 0;
+                            if (parsed[0] != String.Empty && parsed[1] != String.Empty && parsed[2] != String.Empty)
                             {
                             try
                             {
-                                delay = Int32.Parse(parsed[1]);
+                               delay = Int32.Parse(parsed[2]);
                             }
                             catch (FormatException)
                             {
-                                catoexception("InvalidInput", perams + " is invalid", op, opnum, 102);
+                                catoexception("ObjectInputError", "property DELAY should be int! however a invaild value was passed", op, opnum, 801);
                             }
                              Console.WriteLine("");
                             for (int i = 0; i < 101; i++)
                             {
                                 Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                Console.WriteLine(text + i + "%");
+                                Console.WriteLine(parsed[0] + i + parsed[1]);
                                 Thread.Sleep(delay);
                             }
                             }
                             else
                             {
-                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.object can not send an empty string.\"", op, opnum, 101);
+                                catoexception("NullReference", "Object property is null! \n one or more load object required properties are null .", op, opnum, 101);
                             }
                             
                             break;
