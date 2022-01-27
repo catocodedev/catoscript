@@ -362,27 +362,41 @@ namespace cato
                                 parsed[objnum] = s;
                                 objnum++;
                             }
-                            if (objnum != 3){
-                                catoexception("ObjectArrayError", "wrong amout of properties was set for object load", op, opnum, 802);
-                            }
+                            if (objnum > 2 && objnum < 5){
                             int delay = 0;
-                            if (parsed[0] != String.Empty && parsed[1] != String.Empty && parsed[2] != String.Empty)
-                            {
-                            try
-                            {
-                               delay = Int32.Parse(parsed[2]);
-                            }
-                            catch (FormatException)
-                            {
-                                catoexception("ObjectInputError", "property DELAY should be int! however a invaild value was passed", op, opnum, 801);
-                            }
-                             Console.WriteLine("");
-                            for (int i = 0; i < 101; i++)
-                            {
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                Console.WriteLine(parsed[0] + i + parsed[1]);
-                                Thread.Sleep(delay);
-                            }
+                            int amount = 101;
+                                if (parsed[0] != String.Empty && parsed[1] != String.Empty && parsed[2] != String.Empty)
+                                {
+                                    try
+                                    {
+                                        delay = Int32.Parse(parsed[2]);
+                                        if (objnum == 4)
+                                        {
+                                            if (parsed[3] != String.Empty) {
+                                                try
+                                                {
+                                                    amount = Int32.Parse(parsed[3]) + 1;
+                                                }
+                                                catch (FormatException)
+                                                {
+                                                    catoexception("ObjectInputError", "property AMOUNT should be int! however a invaild value was passed", op, opnum, 801);
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    catch (FormatException)
+                                    {
+                                        catoexception("ObjectInputError", "property DELAY should be int! however a invaild value was passed", op, opnum, 801);
+                                    }
+                                    Console.WriteLine("");
+                                    for (int i = 0; i < amount; i++)
+                                    {
+                                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                        Console.WriteLine(parsed[0] + i + parsed[1]);
+                                        Thread.Sleep(delay);
+                                    }
+                                }
                             }
                             else
                             {
