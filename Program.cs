@@ -5,7 +5,7 @@ namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev0.1.3";
+        public static string version = "Dev0.1.4";
         public static string purver = "Dev0.1.0";
         public string OS = "null";
     }
@@ -118,7 +118,7 @@ namespace cato
                         }
                         catch (Exception)
                         {
-                            catoexception("PeramParseFail", "Run Parser could not parse perams to run! Please check the operation and refer to docs.", perams, opnum, 600);
+                            catoexception("PeramParseFail", "Run Parser could not parse perams to run! Please check the operation and refer to docs.", perams, opnum, 601);
                         }
                     }
             }
@@ -297,7 +297,7 @@ namespace cato
                 }
                 catch (Exception ex)
                 {
-                    catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                    catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
                 }
             }
             if (perams.StartsWith("#"))
@@ -321,7 +321,7 @@ namespace cato
                             }
                             catch (Exception ex)
                             {
-                                catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 600);
+                                catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
                             }
                         }
                     }
@@ -334,7 +334,7 @@ namespace cato
                             }
                             else
                             {
-                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                                catoexception("NullPeram", "\"Peram was not set to non-null value \nconsole.send can not send an empty string.\"", op, opnum, 101);
                             }
                             break;
                         case "clean":
@@ -348,7 +348,7 @@ namespace cato
                             }
                             else
                             {
-                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                                catoexception("NullPeram", "\"Peram was not set to non-null value \noverwrite.up can not overwrite with an empty string.\"", op, opnum, 101);
                             }
                             break;
                         case "object.load":
@@ -362,7 +362,7 @@ namespace cato
                                 objnum++;
                             }
                             if (objnum != 3){
-                                catoexception("ObjectError", "wrong amout of properties was set for object load", op, opnum, 802);
+                                catoexception("ObjectArrayError", "wrong amout of properties was set for object load", op, opnum, 802);
                             }
                             int delay = 0;
                             if (parsed[0] != String.Empty && parsed[1] != String.Empty && parsed[2] != String.Empty)
@@ -385,7 +385,7 @@ namespace cato
                             }
                             else
                             {
-                                catoexception("NullReference", "Object property is null! \n one or more load object required properties are null .", op, opnum, 101);
+                                catoexception("NullPeram", "\"Peram was not set to non-null value \nobject.load can not have an empty string.\"", op, opnum, 101);
                             }
                             
                             break;
@@ -399,12 +399,12 @@ namespace cato
                                 }
                                 else
                                 {
-                                    catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to " + perams + "", op, opnum, 400);
+                                    catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to " + perams + "", op, opnum, 401);
                                 }
                             }
                             else
                             {
-                                catoexception("NullReference", "Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                                catoexception("NullPeram", "\"Peram was not set to non-null value \ntext.color can not be an empty string.\"", op, opnum, 101);
                             }
                             break;
                         case "set.text.color":
@@ -417,12 +417,12 @@ namespace cato
                                     }
                                     else
                                     {
-                                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to " + perams + "", op, opnum, 400);
+                                        catoexception("Invaild Option", "Option for console color was not vaild! \nColor can not be set to " + perams + "", op, opnum, 401);
                                     }
                                 }
                                 else
                                 {
-                                    catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                                    catoexception("NullPeram", "\"Peram was not set to non-null value \ntext.color can not be an empty string.\"", op, opnum, 101);
                                 }
 
                             }
@@ -434,7 +434,7 @@ namespace cato
                             }
                             else
                             {
-                                catoexception("NullReference", "\"Object reference was not set to an instance of an object. \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                                catoexception("NullPeram", "\"Peram was not set to non-null value \nwait.key can not send an empty string.\"", op, opnum, 101);
                             }
                             Console.ReadKey();
                             break;
@@ -704,20 +704,17 @@ namespace cato
                     }
                     else
                     {
-                        Console.WriteLine("File doesn't exist.");
-                        System.Environment.Exit(404);
+                        catoexception("FileError", fileName + " could not be found!", fileName, 0, 404);
                     }
                 }
                 else
                 {
-                    Console.WriteLine("File not a catoscript file");
-                    System.Environment.Exit(405);
+                    catoexception("FileError", fileName + " is not a catoscript file!", fileName, 0, 405);
                 }
             }
             else
             {
-                Console.WriteLine("Please write a file name.");
-                System.Environment.Exit(101);
+                catoexception("NullPeram", "\"Peram was not set to non-null value \nRun can not run an empty file.\"", fileName, 0, 101);
             }
         }
         static void Main(String[] args)
