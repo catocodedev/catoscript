@@ -719,6 +719,29 @@ namespace cato
                         case "remove":
                             File.Delete(file);
                             break;
+                        case "write.append":
+                            text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            try
+                            {
+                                    using StreamWriter filee = new(file, append: true);
+                                    filee.WriteLineAsync(text);
+                                }
+                            catch (Exception ex)
+                            {
+                                catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
+                            }
+                            break;
+                        case "write.all":
+                            text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            try
+                            {
+                                File.WriteAllTextAsync(file, text);
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
+                            }
+                            break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of file", op, opnum, 104);
                             break;
