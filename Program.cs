@@ -75,7 +75,6 @@ namespace cato
         static void start()
         {
             Console.WriteLine("Starting main.cato ...");
-            Console.WriteLine("================================================================");
             RunFile("main.cato");
         }
         static void Run(string run)
@@ -261,6 +260,7 @@ namespace cato
                     case "help":
                         Console.WriteLine("------Pur Help-------");
                         Console.WriteLine("quit - retrun to CatoScript CLI");
+                        Console.WriteLine("init - setup a CatoScript Project");
                         break;
                     case "init":
                         if (!System.IO.File.Exists("main.cato"))
@@ -700,8 +700,24 @@ namespace cato
                             }
                             else
                             {
-                                catoexception("FileError", file + " could not be found!", op, opnum, 404);
+                                catoexception("FileNotFound", file + " could not be found!", op, opnum, 404);
                             }
+                            break;
+                        case "create":
+                            if (!System.IO.File.Exists(file))
+                            {
+                                using (System.IO.FileStream fs = System.IO.File.Create(file))
+                                {
+
+                                }
+                            }
+                            else
+                            {
+                                catoexception("FileExsits", file + " already exists!", op, opnum, 406);
+                            }
+                            break;
+                        case "remove":
+                            File.Delete(file);
                             break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of file", op, opnum, 104);
@@ -732,12 +748,12 @@ namespace cato
                     }
                     else
                     {
-                        catoexception("FileError", fileName + " could not be found!", fileName, 0, 404);
+                        catoexception("FileNotFound", fileName + " could not be found!", fileName, 0, 404);
                     }
                 }
                 else
                 {
-                    catoexception("FileError", fileName + " is not a catoscript file!", fileName, 0, 405);
+                    catoexception("FileWrongType", fileName + " is not a catoscript file!", fileName, 0, 405);
                 }
             }
             else
@@ -775,6 +791,7 @@ namespace cato
                                     case "help":
                                         Console.WriteLine("------Pur Help-------");
                                         Console.WriteLine("quit - retrun to CatoScript CLI");
+                                        Console.WriteLine("init - setup a CatoScript Project");
                                         break;
                                     case "init":
                                         if (!System.IO.File.Exists("main.cato"))
