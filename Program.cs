@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-
+using Pastel;
 
 namespace cato
 {
@@ -334,6 +334,26 @@ namespace cato
                             if (text != String.Empty)
                             {
                                 Console.WriteLine(text);
+                            }
+                            else
+                            {
+                                catoexception("NullPeram", "\"Peram was not set to non-null value \nconsole.send can not send an empty string.\"", op, opnum, 101);
+                            }
+                            break;
+                        case "send.color":
+                            string color = "";
+                            try
+                            {
+                                color = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                                int num = Int32.Parse(color, System.Globalization.NumberStyles.HexNumber);
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
+                            }
+                            if (text != String.Empty && color != String.Empty)
+                            {
+                                Console.WriteLine(text.Pastel("#"+color));
                             }
                             else
                             {
