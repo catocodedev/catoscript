@@ -220,7 +220,7 @@ namespace cato
                         Console.WriteLine("version/ver - shows version of catoscript");
                         Console.WriteLine("exit - leave the CLI");
                         Console.WriteLine("pur - open PUR CLI");
-                        Console.WriteLine("eval - test a line of code");
+                        Console.WriteLine("eval - test code");
                         Console.WriteLine("--------------------------------------------");
                         break;
                     case "start":
@@ -358,6 +358,17 @@ namespace cato
                             // object parser
                             var meowobject = perams.Split(new string[] { "(",")" }, 3, StringSplitOptions.None)[1];
                             string[] subs = meowobject.Split(',');
+                            string text1 = "";
+                            string text2 = "";
+                            try
+                            {
+                                text1 = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                                text2 = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            }
+                            catch (Exception)
+                            {
+                                catoexception("ObjectInputError", "no \"\" found in text properties! however a invaild value was passed", op, opnum, 801);
+                            }
                             int objnum = 0;
                             foreach (string s in subs)
                             {
@@ -395,7 +406,7 @@ namespace cato
                                     for (int i = 0; i < amount; i++)
                                     {
                                         Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                        Console.WriteLine(parsed[0] + i + parsed[1]);
+                                        Console.WriteLine(text1 + i + text2);
                                         Thread.Sleep(delay);
                                     }
                                 }
@@ -756,7 +767,37 @@ namespace cato
                         case "pur":
                             if (args[1] != null)
                             {
-                                // add code to run pur cmds
+                                switch (args[1])
+                                {
+                                    case "get":
+                                        // Client.DownloadFile("https://script.cato.fun/pkgs/" + args[2] + "/data/" + args[2] + ".catop", "./logo.png");
+                                        break;
+                                    case "help":
+                                        Console.WriteLine("------Pur Help-------");
+                                        Console.WriteLine("quit - retrun to CatoScript CLI");
+                                        break;
+                                    case "init":
+                                        if (!System.IO.File.Exists("main.cato"))
+                                        {
+                                            Console.WriteLine("Creating main cato file");
+                                            using (System.IO.FileStream fs = System.IO.File.Create("main.cato"))
+                                            {
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("main file already exists!");
+                                        }
+                                        Console.WriteLine("INIT Done!");
+                                        break;
+                                    case "quit":
+                                        cli();
+                                        break;
+                                    default:
+                                        Console.WriteLine("Unknown Command! Try help");
+                                        break;
+                                }
                             }
                             else
                             {
@@ -777,7 +818,7 @@ namespace cato
                             Console.WriteLine("run <anything>.cato - Runs the file");
                             Console.WriteLine("version/ver - shows version of catoscript");
                             Console.WriteLine("pur - open PUR CLI");
-                            Console.WriteLine("eval - test a line of code");
+                            Console.WriteLine("eval - test code");
                             Console.WriteLine("--------------------------------------------");
                             System.Environment.Exit(0);
                             break;
@@ -823,9 +864,7 @@ namespace cato
                     Console.Clear();
                     Console.WriteLine("ERROR CAUGHT!" + err);
                 }
-                Console.WriteLine("Execution ended! Press any key to close CatoScript...");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.ReadKey();
             }
         }
     }
