@@ -72,6 +72,32 @@ namespace cato
             System.Environment.Exit(errornum);
 
         }
+        static void delog(string text, int linenum,int errnum)
+        {
+            if (File.Exists("debug.catlog"))
+            {
+                try
+                {
+                    using StreamWriter filee = new("debug.catlog", append: true);
+                    if (errnum == 0)
+                    {
+                        filee.WriteLine(text);
+                    }
+                    else
+                    {
+                        filee.WriteLine(text + " | " + errnum);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    catoexception("FileWriteError", "debug.catlog" + " could not be written too! details: " + ex, "writing to debug log", linenum, 407);
+                }
+            }
+            else
+            {
+                catoexception("FileNotFound", "debug.catlog" + " could not be found!", "writing to debug log", linenum, 404);
+            }
+        }
         static void start()
         {
             Console.WriteLine("Starting main.cato ...");
@@ -520,23 +546,7 @@ namespace cato
                             Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
                             break;
                         case "log":
-                            if (File.Exists("debug.catlog"))
-                            {
-                                text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                                try
-                                {
-                                    using StreamWriter filee = new("debug.catlog", append: true);
-                                    filee.WriteLineAsync(text);
-                                }
-                                catch (Exception ex)
-                                {
-                                    catoexception("FileWriteError", "debug.catlog" + " could not be written too! details: " + ex, op, opnum, 407);
-                                }
-                            }
-                            else
-                            {
-                                catoexception("FileNotFound", "debug.catlog" + " could not be found!", op, opnum, 404);
-                            }
+                            delog(text,opnum,0);
                             break;
                         default:
                             catoexception("Invaild SubOperation", subop + " Is not a vaild SubOperation of debug", op, opnum, 104);
@@ -783,7 +793,7 @@ namespace cato
                             try
                             {
                                     using StreamWriter filee = new(file, append: true);
-                                    filee.WriteLineAsync(text);
+                                    filee.WriteLine(text);
                                 }
                             catch (Exception ex)
                             {
@@ -801,7 +811,7 @@ namespace cato
                                 text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             try
                             {
-                                File.WriteAllTextAsync(file, text);
+                                File.WriteAllText(file, text);
                             }
                             catch (Exception ex)
                             {
