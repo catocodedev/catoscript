@@ -519,6 +519,25 @@ namespace cato
                         case "get.OS":
                             Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
                             break;
+                        case "log":
+                            if (File.Exists("debug.catlog"))
+                            {
+                                text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                                try
+                                {
+                                    using StreamWriter filee = new("debug.catlog", append: true);
+                                    filee.WriteLineAsync(text);
+                                }
+                                catch (Exception ex)
+                                {
+                                    catoexception("FileWriteError", "debug.catlog" + " could not be written too! details: " + ex, op, opnum, 407);
+                                }
+                            }
+                            else
+                            {
+                                catoexception("FileNotFound", "debug.catlog" + " could not be found!", op, opnum, 404);
+                            }
+                            break;
                         default:
                             catoexception("Invaild SubOperation", subop + " Is not a vaild SubOperation of debug", op, opnum, 104);
                             break;
@@ -758,7 +777,9 @@ namespace cato
                             File.Delete(file);
                             break;
                         case "write.append":
-                            text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            if (File.Exists(file))
+                            {
+                                text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             try
                             {
                                     using StreamWriter filee = new(file, append: true);
@@ -768,9 +789,16 @@ namespace cato
                             {
                                 catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
                             }
+                            }
+                            else
+                            {
+                                catoexception("FileNotFound", file + " could not be found!", op, opnum, 404);
+                            }
                             break;
                         case "write.all":
-                            text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            if (File.Exists(file))
+                            {
+                                text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             try
                             {
                                 File.WriteAllTextAsync(file, text);
@@ -779,7 +807,12 @@ namespace cato
                             {
                                 catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
                             }
-                            break;
+                            }
+                            else
+                            {
+                                catoexception("FileNotFound", file + " could not be found!", op, opnum, 404);
+                            }
+                    break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of file", op, opnum, 104);
                             break;
@@ -961,6 +994,7 @@ namespace cato
                     Console.WriteLine("ERROR CAUGHT!" + err);
                 }
                 Console.ForegroundColor = ConsoleColor.White;
+                System.Environment.Exit(0);
             }
         }
     }
