@@ -536,16 +536,18 @@ namespace cato
                     }
                     break;
                 case "debug":
-                    text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                    
                     switch (subop)
-                    {
+                    { 
                         case "throw":
+                            text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             catoexception("UserGenerated", text, op, opnum, 200);
                             break;
                         case "get.OS":
                             Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
                             break;
                         case "log":
+                            text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             delog(text,opnum,0);
                             break;
                         default:
