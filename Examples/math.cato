@@ -1,8 +1,8 @@
 %Using Math add opertaion to add 2 numbers;
-math.add |9+10|;
+math.add |9,10|;
 %Using Math sub operation to subtact 2 numbers;
-math.sub |10-9|;
+math.sub |10,9|;
 %Using Math multi operation to multiply 2 numbers;
-math.multi |10*9|;
+math.multi |10,9|;
 %Using Math divide operation to divide 2 numbers;
-math.divide |100/10|
+math.divide |100,10|

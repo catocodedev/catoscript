@@ -6,7 +6,7 @@ namespace cato
     public class CatoData
     {
         public static string version = "Dev0.1.4";
-        public static string purver = "Dev0.1.0";
+        public static string purver = "Dev0.1.1";
         public string OS = "null";
     }
     public class Kits
@@ -268,12 +268,30 @@ namespace cato
                             Console.WriteLine("Creating main cato file");
                             using (System.IO.FileStream fs = System.IO.File.Create("main.cato"))
                             {
-                            
+
                             }
+                            using StreamWriter filee = new("main.cato", append: true);
+                            string tmp = "console.send |" + '"' + "Hello, cato" + '"' + "|;";
+                            filee.WriteLine(tmp);
                         }
                         else
                         {
                             Console.WriteLine("main file already exists!");
+                        }
+                        if (!System.IO.File.Exists("debug.catlog"))
+                        {
+                            Console.WriteLine("Creating debug log file");
+                            using (System.IO.FileStream fs = System.IO.File.Create("debug.catlog"))
+                            {
+
+                            }
+                            using StreamWriter filee = new("debug.catlog", append: true);
+                            filee.WriteLine("Project inited with pur " + CatoData.purver);
+                            filee.WriteLine("Project made in CatoScript " + CatoData.version);
+                        }
+                        else
+                        {
+                            Console.WriteLine("debug log already exists!");
                         }
                         Console.WriteLine("INIT Done!");
                         break;
@@ -844,10 +862,28 @@ namespace cato
                                             {
 
                                             }
+                                            using StreamWriter filee = new("main.cato", append: true);
+                                            string tmp = "console.send |"+'"'+"Hello, cato"+'"'+"|;";
+                                            filee.WriteLine(tmp);
                                         }
                                         else
                                         {
                                             Console.WriteLine("main file already exists!");
+                                        }
+                                        if (!System.IO.File.Exists("debug.catlog"))
+                                        {
+                                            Console.WriteLine("Creating debug log file");
+                                            using (System.IO.FileStream fs = System.IO.File.Create("debug.catlog"))
+                                            {
+
+                                            }
+                                            using StreamWriter filee = new("debug.catlog", append: true);
+                                            filee.WriteLine("Project inited with pur " + CatoData.purver);
+                                            filee.WriteLine("Project made in CatoScript " + CatoData.version);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("debug log already exists!");
                                         }
                                         Console.WriteLine("INIT Done!");
                                         break;
