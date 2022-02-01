@@ -1,3 +1,4 @@
+using System.Net;
 using System.Runtime.InteropServices;
 using Pastel;
 
@@ -8,6 +9,8 @@ namespace cato
         public static string version = "Dev0.1.4";
         public static string purver = "Dev0.1.1";
         public string OS = "null";
+        public string debug = "False";
+        
     }
     public class Kits
     {
@@ -330,6 +333,7 @@ namespace cato
                 }
             }   
         }
+
         static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             var kit = new Kits();
@@ -727,7 +731,7 @@ namespace cato
                             {
                                 // the /c will quit
                                 System.Diagnostics.ProcessStartInfo procStartInfo =
-                                    new System.Diagnostics.ProcessStartInfo("cmd", "/c " + text);
+                                    new System.Diagnostics.ProcessStartInfo("cmd","/c " + text);
                                 // The following commands are needed to redirect the standard output.
                                 // This means that it will be redirected to the Process.StandardOutput StreamReader.
                                 procStartInfo.RedirectStandardOutput = true;
@@ -792,15 +796,15 @@ namespace cato
                             if (File.Exists(file))
                             {
                                 text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                            try
-                            {
+                                try
+                                {
                                     using StreamWriter filee = new(file, append: true);
                                     filee.WriteLine(text);
                                 }
-                            catch (Exception ex)
-                            {
-                                catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
-                            }
+                                catch (Exception ex)
+                                {
+                                    catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
+                                }
                             }
                             else
                             {
@@ -811,24 +815,34 @@ namespace cato
                             if (File.Exists(file))
                             {
                                 text = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                            try
-                            {
-                                File.WriteAllText(file, text);
-                            }
-                            catch (Exception ex)
-                            {
-                                catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
-                            }
+                                try
+                                {
+                                    File.WriteAllText(file, text);
+                                }
+                                catch (Exception ex)
+                                {
+                                    catoexception("FileWriteError", file + " could not be written too! details: " + ex, op, opnum, 407);
+                                }
                             }
                             else
                             {
                                 catoexception("FileNotFound", file + " could not be found!", op, opnum, 404);
                             }
-                    break;
+                            break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of file", op, opnum, 104);
                             break;
                     }
+                    break;
+                        case "http":
+                            string link = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            switch (subop)
+                                {
+                                    case "get":
+                                    // add http req code
+                                    break;
+                                }
+                            break;
                     break;
             default:
                     catoexception("InvalidOperation", "\"This Operation was not recognized.\"", op, opnum, 100);
@@ -972,6 +986,18 @@ namespace cato
                             System.Environment.Exit(0);
                             break;
                         case "run":
+                            if (args[2] != string.Empty)
+                            {
+                                switch (args[2])
+                                {
+                                    case "-debug":
+                                        //allow ddebug
+                                        break;
+                                    default:
+                                        //nothing lel
+                                        break;
+                                }
+                            }
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
                             Console.Clear();
