@@ -661,6 +661,10 @@ namespace cato
                             Console.BackgroundColor = ConsoleColor.Black;
                             System.Environment.Exit(201);
                             break;
+                        case "run":
+                            string filee = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            RunFile(filee);
+                            break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of script", op, opnum, 104);
                             break;
