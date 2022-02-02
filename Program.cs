@@ -171,6 +171,26 @@ namespace cato
 
             return String.Empty;
         }
+        public static void arun()
+        {
+            string state = "run";
+            while (state == "run")
+            {
+                using var watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
+                watcher.Filter = "*.cato";
+                watcher.IncludeSubdirectories = false;
+                watcher.EnableRaisingEvents = true;
+                watcher.Changed += OnChanged;
+                static void OnChanged(object sender, FileSystemEventArgs e)
+                {
+                    if (e.ChangeType != WatcherChangeTypes.Changed)
+                    {
+                        return;
+                    }
+                    Console.WriteLine("Changed!");
+                }
+            }
+        }
         static void cli()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -253,6 +273,9 @@ namespace cato
                         break;
                     case "start":
                         start();
+                        break;
+                    case "activate":
+                        arun();
                         break;
                     default:
                         Console.WriteLine("Unknown Command! Try help");
@@ -549,6 +572,9 @@ namespace cato
                             break;
                         case "get.OS":
                             Console.WriteLine(RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
+                            break;
+                        case "get.dir":
+                            Console.WriteLine(Directory.GetCurrentDirectory());
                             break;
                         case "log":
                             text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
