@@ -360,6 +360,7 @@ namespace cato
         static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             var kit = new Kits();
+            int peramnum = 0;
             // generic parser
             var parsed = perams.Split(new[] { ',' });
             if (!perams.Contains("("))
@@ -385,10 +386,8 @@ namespace cato
                     break;
                 case "console":
                     var text = "";
-                    if (!subop.Contains("object"))
+                    if (parsed[0].StartsWith('"'))
                     {
-                        if (parsed[0] != "#")
-                        {
                             try
                             {
                                 text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
@@ -398,8 +397,11 @@ namespace cato
                                 catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
                             }
                         }
+                    foreach (string s in parsed)
+                    {
+                        peramnum++;
                     }
-                        switch (subop)
+                    switch (subop)
                     {
                         case "send":
                             if (text != String.Empty)
@@ -435,15 +437,75 @@ namespace cato
                             Console.Clear();
                             break;
                         case "overwrite.up":
+                            int pos = 1;
+                            if (peramnum == 2)
+                            {
+                                try
+                                {
+                                    pos = Int32.Parse(parsed[1]);
+                                }catch (Exception ex)
+                                {
+                                    catoexception("Invaild Option", parsed[1] + " Option for uppos was not vaild", op, opnum, 401);
+                                }
+                            }
                             if (text != String.Empty)
                             {
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                Console.SetCursorPosition(0, Console.CursorTop - pos);
                                 Console.WriteLine(text);
+                                Console.SetCursorPosition(0, Console.CursorTop + pos - 1);
                             }
                             else
                             {
                                 catoexception("NullPeram", "\"Peram was not set to non-null value \noverwrite.up can not overwrite with an empty string.\"", op, opnum, 101);
                             }
+                            break;
+                        case "cursor.pos.y":
+                            pos = 1;
+                                try
+                                {
+                                    pos = Int32.Parse(parsed[0]);
+                                }
+                                catch (Exception ex)
+                                {
+                                    catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                                }
+                                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + pos);
+                            break;
+                        case "cursor.pos.x":
+                            pos = 1;
+                            try
+                            {
+                                pos = Int32.Parse(parsed[0]);
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                            }
+                            Console.SetCursorPosition(Console.CursorLeft + pos,Console.CursorTop);
+                            break;
+                        case "cursor.size":
+                            pos = 1;
+                            try
+                            {
+                                pos = Int32.Parse(parsed[0]);
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                            }
+                            Console.CursorSize = pos;
+                            break;
+                        case "cursor.vis":
+                            bool vis = true;
+                            try
+                            {
+                                vis = bool.Parse(parsed[0]);
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                            }
+                            Console.CursorVisible = vis;
                             break;
                         case "object.load":
                             // object parser
