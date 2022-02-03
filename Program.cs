@@ -9,8 +9,7 @@ namespace cato
         public static string version = "Dev0.1.4";
         public static string purver = "Dev0.1.1";
         public string OS = "null";
-        public string debug = "False";
-        
+        public string debug = "False";       
     }
     public class Kits
     {
@@ -103,8 +102,34 @@ namespace cato
         }
         static void start()
         {
+            string runner = "cmd";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                runner = "bash";
+            }
+
             Console.WriteLine("Starting main.cato ...");
-            RunFile("main.cato");
+            try
+            {
+
+                    // the /c will quit
+                    System.Diagnostics.ProcessStartInfo procStartInfo =
+                    new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato main.cato");
+                procStartInfo.RedirectStandardOutput = false;
+                procStartInfo.UseShellExecute = true;
+                // Do not create the black window.
+                procStartInfo.CreateNoWindow = true;
+                // Now we create a process, assign its ProcessStartInfo and start it
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                proc.WaitForExit();
+            }
+            catch (Exception objException)
+            {
+                catoexception("SystemRunError", objException.ToString(), "cato spawn", 0, 700);
+            }
+            Console.WriteLine("Project Ran!");
         }
         static void Run(string run)
         {
@@ -170,6 +195,36 @@ namespace cato
             }
 
             return String.Empty;
+        }
+        public static void spawn()
+        {
+            try
+            {
+                string runner = "cmd";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    runner = "bash";
+                }
+                // the /c will quit
+                System.Diagnostics.ProcessStartInfo procStartInfo =
+                    new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato")
+                    {
+                        RedirectStandardOutput = false,
+                        UseShellExecute = true,
+                        // Do not create the black window.
+                        CreateNoWindow = true
+                    };
+                // Now we create a process, assign its ProcessStartInfo and start it
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                proc.WaitForExit();
+            }
+            catch (Exception objException)
+            {
+                catoexception("SystemRunError", objException.ToString(), "cato spawn", 0, 700);
+            }
+            Console.WriteLine("Cato despawned!");
         }
         public static void arun()
         {
@@ -269,10 +324,15 @@ namespace cato
                         Console.WriteLine("exit - leave the CLI");
                         Console.WriteLine("pur - open PUR CLI");
                         Console.WriteLine("eval - test code");
+                        Console.WriteLine("start - start your catoscript project");
+                        Console.WriteLine("activate - activate cato live run");
                         Console.WriteLine("--------------------------------------------");
                         break;
                     case "start":
                         start();
+                        break;
+                    case "spawn":
+                        spawn();
                         break;
                     case "activate":
                         arun();
@@ -379,7 +439,11 @@ namespace cato
             {
                 parsed[0] = "#";
             }
-                switch (topop)
+            foreach (string s in parsed)
+            {
+                peramnum++;
+            }
+            switch (topop)
             {
                 case "%":
                     // nothing because comment
@@ -397,10 +461,6 @@ namespace cato
                                 catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
                             }
                         }
-                    foreach (string s in parsed)
-                    {
-                        peramnum++;
-                    }
                     switch (subop)
                     {
                         case "send":
@@ -849,20 +909,24 @@ namespace cato
                             {
                                 try
                                 {
-                                    wait = bool.Parse(parsed[1]);
+                                    wait = Boolean.Parse(parsed[1]);
                                 }
                                 catch (Exception ex)
                                 {
                                     catoexception("Invaild Option", parsed[1] + " Option for wait was not vaild", op, opnum, 401);
                                 }
                             }
+                            
                                 try
                             {
+                                string runner = "cmd";
+                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                                {
+                                    runner = "bash";
+                                }
                                 // the /c will quit
                                 System.Diagnostics.ProcessStartInfo procStartInfo =
-                                    new System.Diagnostics.ProcessStartInfo("cmd","/c " + text);
-                                // The following commands are needed to redirect the standard output.
-                                // This means that it will be redirected to the Process.StandardOutput StreamReader.
+                                    new System.Diagnostics.ProcessStartInfo(runner,"/c " + text);
                                 procStartInfo.RedirectStandardOutput = false;
                                 procStartInfo.UseShellExecute = true;
                                 // Do not create the black window.
@@ -871,11 +935,15 @@ namespace cato
                                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                                 proc.StartInfo = procStartInfo;
                                 proc.Start();
-                                if (wait = true)
+                                if (wait == true)
                                 {
                                     proc.WaitForExit();
                                 }
-                                }
+                                else
+                                {
+                                    proc.Close();
+                                } 
+                            }
                             catch (Exception objException)
                             {
                                 catoexception("SystemRunError", objException.ToString(), op, opnum, 700);
@@ -1078,6 +1146,7 @@ namespace cato
                                     case "quit":
                                         cli();
                                         break;
+                                        break;
                                     default:
                                         Console.WriteLine("Unknown Command! Try help");
                                         break;
@@ -1092,6 +1161,9 @@ namespace cato
                         case "":
                             cli();
                             break;
+                        case "cli":
+                            cli();
+                            break;
                         case "start":
                             start();
                             break;
@@ -1103,6 +1175,8 @@ namespace cato
                             Console.WriteLine("version/ver - shows version of catoscript");
                             Console.WriteLine("pur - open PUR CLI");
                             Console.WriteLine("eval - test code");
+                            Console.WriteLine("start - start your catoscript project");
+                            Console.WriteLine("activate - activate cato live run");
                             Console.WriteLine("--------------------------------------------");
                             System.Environment.Exit(0);
                             break;
@@ -1138,6 +1212,12 @@ namespace cato
                             Console.Clear();
                             Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
                             Console.WriteLine("Cato CLI ready!");
+                            break;
+                        case "spawn":
+                            spawn();
+                            break;
+                        case "activate":
+                            arun();
                             break;
                         default:
                             if (args[0].Contains(".cato"))
