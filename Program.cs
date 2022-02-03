@@ -416,10 +416,8 @@ namespace cato
                 }
             }   
         }
-
         static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
-            var kit = new Kits();
             int peramnum = 0;
             // generic parser
             var parsed = perams.Split(new[] { ',' });
@@ -847,7 +845,7 @@ namespace cato
                     //@kit parser
                     try
                     {
-                        kit.Set(perams, perams);
+                        // kit.Set(parsed[0], parsed[1]);
                     }
                     catch (Exception)
                     {
@@ -864,7 +862,7 @@ namespace cato
                                 string value = Console.ReadLine();
                                 try
                                 {
-                                    kit.Set(perams, value);
+                                    // kit.Set(perams, value);
                                 }
                                 catch (Exception)
                                 {
@@ -875,7 +873,7 @@ namespace cato
                             {
                                 try
                                 {
-                                    kit.Set(perams, perams);
+                                    // kit.Set(perams, perams);
                                 }
                                 catch (Exception)
                                 {
@@ -1080,8 +1078,7 @@ namespace cato
         }
         static void Main(String[] args)
         {
-                // static readonly HttpClient Client = new HttpClient();
-                if (args == null || args.Length == 0)
+            if (args == null || args.Length == 0)
             {
                 cli();
             }
