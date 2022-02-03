@@ -844,6 +844,18 @@ namespace cato
                     switch (subop)
                     {
                         case "run":
+                            bool wait = true;
+                            if (peramnum == 2)
+                            {
+                                try
+                                {
+                                    wait = bool.Parse(parsed[1]);
+                                }
+                                catch (Exception ex)
+                                {
+                                    catoexception("Invaild Option", parsed[1] + " Option for wait was not vaild", op, opnum, 401);
+                                }
+                            }
                                 try
                             {
                                 // the /c will quit
@@ -859,8 +871,11 @@ namespace cato
                                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                                 proc.StartInfo = procStartInfo;
                                 proc.Start();
-                                proc.WaitForExit();
-                            }
+                                if (wait = true)
+                                {
+                                    proc.WaitForExit();
+                                }
+                                }
                             catch (Exception objException)
                             {
                                 catoexception("SystemRunError", objException.ToString(), op, opnum, 700);
