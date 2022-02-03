@@ -436,7 +436,7 @@ namespace cato
                         case "clean":
                             Console.Clear();
                             break;
-                        case "overwrite.up":
+                        case "overwrite":
                             int pos = 1;
                             if (peramnum == 2)
                             {
@@ -450,9 +450,15 @@ namespace cato
                             }
                             if (text != String.Empty)
                             {
-                                Console.SetCursorPosition(0, Console.CursorTop - pos);
-                                Console.WriteLine(text);
-                                Console.SetCursorPosition(0, Console.CursorTop + pos - 1);
+                                try
+                                {
+                                    Console.SetCursorPosition(0, Console.CursorTop - pos);
+                                    Console.WriteLine(text);
+                                    Console.SetCursorPosition(0, Console.CursorTop + pos - 1);
+                                }catch (Exception ex)
+                                {
+                                    catoexception("Invaild Option", "Option for pos was not vaild! \npos can not be out of range!", op, opnum, 401);
+                                }
                             }
                             else
                             {
@@ -469,8 +475,14 @@ namespace cato
                                 {
                                     catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
                                 }
+                            try
+                            {
                                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + pos);
-                            break;
+                            }catch(Exception ex)
+                            {
+                                catoexception("Invaild Option", "Option for pos was not vaild! \npos can not be out of range!", op, opnum, 401);
+                            }
+                                break;
                         case "cursor.pos.x":
                             pos = 1;
                             try
@@ -481,20 +493,33 @@ namespace cato
                             {
                                 catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
                             }
-                            Console.SetCursorPosition(Console.CursorLeft + pos,Console.CursorTop);
-                            break;
-                        case "cursor.size":
-                            pos = 1;
                             try
                             {
-                                pos = Int32.Parse(parsed[0]);
-                            }
-                            catch (Exception ex)
+                                Console.SetCursorPosition(Console.CursorLeft + pos, Console.CursorTop);
+                            }catch (Exception ex)
                             {
-                                catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                                catoexception("Invaild Option", "Option for pos was not vaild! \npos can not be out of range!", op, opnum, 401);
                             }
-                            Console.CursorSize = pos;
                             break;
+                        case "cursor.size":
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                            {
+                                pos = 1;
+                                try
+                                {
+                                    pos = Int32.Parse(parsed[0]);
+                                }
+                                catch (Exception ex)
+                                {
+                                    catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                                }
+                                Console.CursorSize = pos;
+                            }
+                            else
+                            {
+                                catoexception("Invaild Platform", "cursor.size is not supported on your platform!", op, opnum, 900);
+                            }
+                                break;
                         case "cursor.vis":
                             bool vis = true;
                             try
