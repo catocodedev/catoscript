@@ -69,13 +69,14 @@ namespace cato
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
+            delog(type + "Execption: " + info, opnum, errornum);
             Console.WriteLine(type +"Execption: "+ info + " | " + op + "(Operation:"+ opnum +")");
             Console.WriteLine("ERROR CODE : " + errornum);
             Console.WriteLine("more info https://github.com/catoscript/cato/wiki/Errors#" + errornum);
             Console.ReadKey();
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
-            System.Environment.Exit(errornum);
+            // System.Environment.Exit(errornum);
 
         }
         static void delog(string text, int linenum,int errnum)
@@ -91,7 +92,7 @@ namespace cato
                     }
                     else
                     {
-                        filee.WriteLine(text + " | " + errnum);
+                        filee.WriteLine("line("+ linenum +") | "+ text + " | " + errnum);
                     }
                 }
                 catch (Exception ex)
@@ -233,22 +234,26 @@ namespace cato
         }
         public static void arun()
         {
-            string state = "run";
-            while (state == "run")
-            {
-                using var watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
-                watcher.Filter = "*.cato";
-                watcher.IncludeSubdirectories = false;
-                watcher.EnableRaisingEvents = true;
-                watcher.Changed += OnChanged;
+            string run = "run";
+            string stat = "run";
+            RunFile("main.cato");
+            using var watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
+            watcher.Filter = "main.cato";
+            watcher.IncludeSubdirectories = false;
+            watcher.EnableRaisingEvents = true;
+            watcher.Changed += OnChanged;
                 static void OnChanged(object sender, FileSystemEventArgs e)
                 {
                     if (e.ChangeType != WatcherChangeTypes.Changed)
                     {
                         return;
                     }
-                    Console.WriteLine("Changed!");
+                    Thread.Sleep(400);
+                    RunFile("main.cato");
                 }
+            while (run == "run")
+            {
+            
             }
         }
         static void cli()
