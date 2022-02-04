@@ -18,14 +18,10 @@ namespace cato
         {
             if (kits.ContainsKey(key))
             {
-                kits[key] = value;
-                Console.WriteLine(key + " updated as " + kits[key]);
-            }
+                kits[key] = value;            }
             else
             {
-                kits.Add(key, value);
-                Console.WriteLine(key + " Set as " + kits[key]);
-            }
+                kits.Add(key, value);            }
         }
         public static string Get(string key)
         {
@@ -37,6 +33,10 @@ namespace cato
             }
 
             return result;
+        }
+        public static void Remove(string key)
+        {
+            kits.Remove(key);
         }
         public static void Clear()
         {
@@ -455,15 +455,15 @@ namespace cato
                     var text = "";
                     if (parsed[0].StartsWith('"'))
                     {
-                            try
-                            {
-                                text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                            }
-                            catch (Exception ex)
-                            {
-                                catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
-                            }
+                        try
+                        {
+                            text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                         }
+                        catch (Exception ex)
+                        {
+                            catoexception("PeramParseFail", "Console Parser could not parse |" + perams + "| to run!", op, opnum, 611);
+                        }
+                    }
                     switch (subop)
                     {
                         case "send":
@@ -489,7 +489,7 @@ namespace cato
                             }
                             if (text != String.Empty && color != String.Empty)
                             {
-                                Console.WriteLine(text.Pastel("#"+color));
+                                Console.WriteLine(text.Pastel("#" + color));
                             }
                             else
                             {
@@ -506,7 +506,7 @@ namespace cato
                                 try
                                 {
                                     pos = Int32.Parse(parsed[1]);
-                                }catch (Exception ex)
+                                } catch (Exception ex)
                                 {
                                     catoexception("Invaild Option", parsed[1] + " Option for uppos was not vaild", op, opnum, 401);
                                 }
@@ -518,7 +518,7 @@ namespace cato
                                     Console.SetCursorPosition(0, Console.CursorTop - pos);
                                     Console.WriteLine(text);
                                     Console.SetCursorPosition(0, Console.CursorTop + pos - 1);
-                                }catch (Exception ex)
+                                } catch (Exception ex)
                                 {
                                     catoexception("Invaild Option", "Option for pos was not vaild! \npos can not be out of range!", op, opnum, 401);
                                 }
@@ -530,22 +530,22 @@ namespace cato
                             break;
                         case "cursor.pos.y":
                             pos = 1;
-                                try
-                                {
-                                    pos = Int32.Parse(parsed[0]);
-                                }
-                                catch (Exception ex)
-                                {
-                                    catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
-                                }
+                            try
+                            {
+                                pos = Int32.Parse(parsed[0]);
+                            }
+                            catch (Exception ex)
+                            {
+                                catoexception("Invaild Option", parsed[0] + " Option for uppos was not vaild", op, opnum, 401);
+                            }
                             try
                             {
                                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + pos);
-                            }catch(Exception ex)
+                            } catch (Exception ex)
                             {
                                 catoexception("Invaild Option", "Option for pos was not vaild! \npos can not be out of range!", op, opnum, 401);
                             }
-                                break;
+                            break;
                         case "cursor.pos.x":
                             pos = 1;
                             try
@@ -559,7 +559,7 @@ namespace cato
                             try
                             {
                                 Console.SetCursorPosition(Console.CursorLeft + pos, Console.CursorTop);
-                            }catch (Exception ex)
+                            } catch (Exception ex)
                             {
                                 catoexception("Invaild Option", "Option for pos was not vaild! \npos can not be out of range!", op, opnum, 401);
                             }
@@ -582,7 +582,7 @@ namespace cato
                             {
                                 catoexception("Invaild Platform", "cursor.size is not supported on your platform!", op, opnum, 900);
                             }
-                                break;
+                            break;
                         case "cursor.vis":
                             bool vis = true;
                             try
@@ -597,7 +597,7 @@ namespace cato
                             break;
                         case "object.load":
                             // object parser
-                            var meowobject = perams.Split(new string[] { "(",")" }, 3, StringSplitOptions.None)[1];
+                            var meowobject = perams.Split(new string[] { "(", ")" }, 3, StringSplitOptions.None)[1];
                             string[] subs = meowobject.Split(',');
                             string text1 = "";
                             string text2 = "";
@@ -616,9 +616,9 @@ namespace cato
                                 parsed[objnum] = s;
                                 objnum++;
                             }
-                            if (objnum > 2 && objnum < 5){
-                            int delay = 0;
-                            int amount = 101;
+                            if (objnum > 2 && objnum < 5) {
+                                int delay = 0;
+                                int amount = 101;
                                 if (parsed[0] != String.Empty && parsed[1] != String.Empty && parsed[2] != String.Empty)
                                 {
                                     try
@@ -656,7 +656,7 @@ namespace cato
                             {
                                 catoexception("NullPeram", "\"Peram was not set to non-null value \nobject.load can not have an empty string.\"", op, opnum, 101);
                             }
-                            
+
                             break;
                         case "set.back.color":
                             if (text != String.Empty)
@@ -713,9 +713,9 @@ namespace cato
                     }
                     break;
                 case "debug":
-                    
+
                     switch (subop)
-                    { 
+                    {
                         case "throw":
                             text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             catoexception("UserGenerated", text, op, opnum, 200);
@@ -728,7 +728,7 @@ namespace cato
                             break;
                         case "log":
                             text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                            delog(text,opnum,0);
+                            delog(text, opnum, 0);
                             break;
                         default:
                             catoexception("Invaild SubOperation", subop + " Is not a vaild SubOperation of debug", op, opnum, 104);
@@ -848,13 +848,25 @@ namespace cato
                     break;
                 case "@kit":
                     //@kit parser
+                    switch (subop)
+                    {
+                    case "make":
                     try
                     {
-                         Kits.Set(parsed[0], parsed[1]);
+                        Kits.Set(parsed[0], parsed[1]);
                     }
                     catch (Exception)
                     {
                         catoexception("InvaildKitDelcare", "The kit could not be delacared!", op, opnum, 300);
+                    }
+                            break;
+                        case "remove":
+                            Kits.Remove(parsed[0]);
+                    break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of @kit", op, opnum, 104);
+                            break;
+
                     }
                     break;
                 case "kit":
@@ -862,21 +874,34 @@ namespace cato
                     switch (subop)
                     {
                         case "set":
-
-                                string value = Console.ReadLine();
                                 try
                                 {
-                                    // kit.Set(perams, value);
+                                    Kits.Set(parsed[0],parsed[1]);
                                 }
                                 catch (Exception)
                                 {
-                                    catoexception("InvaildKit", "The kit " + perams + " wasn't found!", op, opnum, 301);
+                                    catoexception("InvaildKit", "The kit " + parsed[0] + " wasn't found!", op, opnum, 301);
                                 }
                             break;
                         case "get":
                             Console.WriteLine(Kits.Get(parsed[0]));
                             break;
+                        case "set.from.input":
+                            string value = Console.ReadLine();
+                            try
+                            {
+                                Kits.Set(parsed[0], value);
+                            }
+                            catch (Exception)
+                            {
+                                catoexception("InvaildKit", "The kit " + parsed[0] + " wasn't found!", op, opnum, 301);
+                            }
+                            break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of kit", op, opnum, 104);
+                            break;
                     }
+
                     break;
                 case "if":
                     //to be made
