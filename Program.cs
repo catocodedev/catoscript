@@ -347,6 +347,13 @@ namespace cato
                     case "activate":
                         arun();
                         break;
+                    case "info":
+                        Console.WriteLine("Catoscript - " + CatoData.version);
+                        Console.WriteLine("Pur - " + CatoData.purver);
+                        Console.WriteLine("Install Dir - " + Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                        Console.WriteLine("Github - https://github.com/catocodedev/catoscript");
+                        Console.WriteLine("Running OS - " + RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
+                        break;
                     default:
                         Console.WriteLine("Unknown Command! Try help");
                         break;
@@ -1240,6 +1247,13 @@ namespace cato
                             break;
                         case "activate":
                             arun();
+                            break;
+                        case "info":
+                            Console.WriteLine("Catoscript - " + CatoData.version);
+                            Console.WriteLine("Pur - " + CatoData.purver);
+                            Console.WriteLine("Install Dir - " + Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                            Console.WriteLine("Github - https://github.com/catocodedev/catoscript");
+                            Console.WriteLine("Running OS - " + RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
                             break;
                         default:
                             if (args[0].Contains(".cato"))
