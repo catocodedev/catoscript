@@ -13,8 +13,8 @@ namespace cato
     }
     public class Kits
     {
-        private Dictionary<string, string> kits = new Dictionary<string, string>();
-        public void Set(string key, string value)
+        private static Dictionary<string, string> kits = new Dictionary<string, string>();
+        public static void Set(string key, string value)
         {
             if (kits.ContainsKey(key))
             {
@@ -27,7 +27,7 @@ namespace cato
                 Console.WriteLine(key + " Set as " + kits[key]);
             }
         }
-        public string Get(string key)
+        public static string Get(string key)
         {
             string result = null;
 
@@ -38,8 +38,12 @@ namespace cato
 
             return result;
         }
+        public static void Clear()
+        {
+            kits.Clear();
+        }
     }
-    internal static class cato
+    internal static class Cato
     {
         public static void Each<T>(this IEnumerable<T> ie, Action<T, int> action)
         {
@@ -133,6 +137,7 @@ namespace cato
         }
         static void Run(string run)
         {
+            Kits.Clear();
             string tmp = "tmp";
             string topop = "";
             string subop = "";
@@ -416,7 +421,7 @@ namespace cato
                 }
             }   
         }
-        static void Execute(string op, string topop, string subop, string perams, int opnum)
+        public static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             int peramnum = 0;
             // generic parser
@@ -845,7 +850,7 @@ namespace cato
                     //@kit parser
                     try
                     {
-                        // kit.Set(parsed[0], parsed[1]);
+                         Kits.Set(parsed[0], parsed[1]);
                     }
                     catch (Exception)
                     {
@@ -857,8 +862,7 @@ namespace cato
                     switch (subop)
                     {
                         case "set":
-                            if (subop.Contains("frominput"))
-                            {
+
                                 string value = Console.ReadLine();
                                 try
                                 {
@@ -868,18 +872,9 @@ namespace cato
                                 {
                                     catoexception("InvaildKit", "The kit " + perams + " wasn't found!", op, opnum, 301);
                                 }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    // kit.Set(perams, perams);
-                                }
-                                catch (Exception)
-                                {
-                                    catoexception("InvaildKit", "The kit " + perams + " wasn't found!", op, opnum, 301);
-                                }
-                            }
+                            break;
+                        case "get":
+                            Console.WriteLine(Kits.Get(parsed[0]));
                             break;
                     }
                     break;
