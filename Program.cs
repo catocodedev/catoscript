@@ -236,7 +236,14 @@ namespace cato
         {
             string run = "run";
             string stat = "run";
-            RunFile("main.cato");
+            try
+            {
+                RunFile("main.cato");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("main.cato failed to run!");
+            }
             using var watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
             watcher.Filter = "main.cato";
             watcher.IncludeSubdirectories = false;
@@ -244,12 +251,22 @@ namespace cato
             watcher.Changed += OnChanged;
                 static void OnChanged(object sender, FileSystemEventArgs e)
                 {
-                    if (e.ChangeType != WatcherChangeTypes.Changed)
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+                if (e.ChangeType != WatcherChangeTypes.Changed)
                     {
                         return;
                     }
                     Thread.Sleep(400);
+                try
+                {
                     RunFile("main.cato");
+                }
+                catch(Exception)
+                {
+                    Console.WriteLine("main.cato failed to run!");
+                    Thread.Sleep(4000);
+                }
                 }
             while (run == "run")
             {
@@ -290,7 +307,13 @@ namespace cato
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.Clear();
-                        RunFile(tmp1);
+                        try
+                        {
+                            RunFile(tmp1);
+                        }catch (Exception ex)
+                        {
+                            Console.WriteLine("Failed to run file " + tmp1);
+                        }
                         Console.WriteLine("Cato File finnished running. Press any key to retrun to CLI");
                         Console.ReadKey();
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -851,7 +874,14 @@ namespace cato
                             break;
                         case "run":
                             string filee = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                            RunFile(filee);
+                            try
+                            {
+                                RunFile(filee);
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine(filee + "failed to run!");
+                            }
                             break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of script", op, opnum, 104);
@@ -1091,8 +1121,14 @@ namespace cato
                         {
                             whole = whole + str; 
                         });
-                        Run(whole);
-                    }
+                        try
+                        {
+                            Run(whole);
+                        }catch (Exception ex)
+                        {
+                            Console.WriteLine("RunFile failure!");
+                        }
+                        }
                     else
                     {
                         catoexception("FileNotFound", fileName + " could not be found!", fileName, 0, 404);
@@ -1233,7 +1269,14 @@ namespace cato
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.BackgroundColor = ConsoleColor.Black;
                             Console.Clear();
-                            RunFile(args[1]);
+                            try
+                            {
+                                RunFile(args[1]);
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine(args[1] + "failed to run!");
+                            }
                             Console.WriteLine("Cato File finnished running. Press any key to retrun to CLI");
                             Console.ReadKey();
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -1258,7 +1301,14 @@ namespace cato
                         default:
                             if (args[0].Contains(".cato"))
                             {
-                                RunFile(args[0]);
+                                try
+                                {
+                                    RunFile(args[0]);
+                                }
+                                catch (Exception)
+                                {
+                                    Console.WriteLine(args[0] + "failed to run!");
+                                }
                             }
                             else
                             {
