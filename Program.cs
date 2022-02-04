@@ -69,14 +69,15 @@ namespace cato
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
-            delog(type + "Execption: " + info, opnum, errornum);
-            Console.WriteLine(type +"Execption: "+ info + " | " + op + "(Operation:"+ opnum +")");
+            if (File.Exists("debug.catlog"))
+            {
+                delog(type + "Execption: " + info, opnum, errornum);
+            }
+                Console.WriteLine(type +"Execption: "+ info + " | " + op + "(Operation:"+ opnum +")");
             Console.WriteLine("ERROR CODE : " + errornum);
             Console.WriteLine("more info https://github.com/catoscript/cato/wiki/Errors#" + errornum);
-            Console.ReadKey();
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
-            // System.Environment.Exit(errornum);
 
         }
         static void delog(string text, int linenum,int errnum)
