@@ -1099,6 +1099,22 @@ namespace cato
                                     case "get":
                                     // add http req code
                                     break;
+                        case "download":
+                            string output = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
+                            try
+                            {
+                                WebClient myWebClient = new WebClient();
+                                myWebClient.DownloadFile(link, output);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.ToString());
+                            }
+                            while (File.Exists(output) == false)
+                            {
+
+                            }
+                            break;
                                 }
                             break;
                     break;
