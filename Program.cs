@@ -1,7 +1,9 @@
 using System.Net;
 using System.Runtime.InteropServices;
 using Pastel;
-
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 namespace cato
 {
     public class CatoData
@@ -104,6 +106,20 @@ namespace cato
             else
             {
                 catoexception("FileNotFound", "debug.catlog" + " could not be found!", "writing to debug log", linenum, 404);
+            }
+        }
+        public static async void httpdownload(string url, string file)
+        {
+            var client = new HttpClient();
+            var response = await client.GetAsync(url);
+
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            {
+                var fileInfo = new FileInfo(file);
+                using (var fileStream = fileInfo.OpenWrite())
+                {
+                    await stream.CopyToAsync(fileStream);
+                }
             }
         }
         static void start()
@@ -893,19 +909,19 @@ namespace cato
                     //@kit parser
                     switch (subop)
                     {
-                    case "make":
-                    try
-                    {
-                        Kits.Set(parsed[0], parsed[1]);
-                    }
-                    catch (Exception)
-                    {
-                        catoexception("InvaildKitDelcare", "The kit could not be delacared!", op, opnum, 300);
-                    }
+                        case "make":
+                            try
+                            {
+                                Kits.Set(parsed[0], parsed[1]);
+                            }
+                            catch (Exception)
+                            {
+                                catoexception("InvaildKitDelcare", "The kit could not be delacared!", op, opnum, 300);
+                            }
                             break;
                         case "remove":
                             Kits.Remove(parsed[0]);
-                    break;
+                            break;
                         default:
                             catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of @kit", op, opnum, 104);
                             break;
@@ -917,14 +933,14 @@ namespace cato
                     switch (subop)
                     {
                         case "set":
-                                try
-                                {
-                                    Kits.Set(parsed[0],parsed[1]);
-                                }
-                                catch (Exception)
-                                {
-                                    catoexception("InvaildKit", "The kit " + parsed[0] + " wasn't found!", op, opnum, 301);
-                                }
+                            try
+                            {
+                                Kits.Set(parsed[0], parsed[1]);
+                            }
+                            catch (Exception)
+                            {
+                                catoexception("InvaildKit", "The kit " + parsed[0] + " wasn't found!", op, opnum, 301);
+                            }
                             break;
                         case "get":
                             Console.WriteLine(Kits.Get(parsed[0]));
@@ -977,8 +993,8 @@ namespace cato
                                     catoexception("Invaild Option", parsed[1] + " Option for wait was not vaild", op, opnum, 401);
                                 }
                             }
-                            
-                                try
+
+                            try
                             {
                                 string runner = "cmd";
                                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -987,7 +1003,7 @@ namespace cato
                                 }
                                 // the /c will quit
                                 System.Diagnostics.ProcessStartInfo procStartInfo =
-                                    new System.Diagnostics.ProcessStartInfo(runner,"/c " + text);
+                                    new System.Diagnostics.ProcessStartInfo(runner, "/c " + text);
                                 procStartInfo.RedirectStandardOutput = false;
                                 procStartInfo.UseShellExecute = true;
                                 // Do not create the black window.
@@ -1003,7 +1019,7 @@ namespace cato
                                 else
                                 {
                                     proc.Close();
-                                } 
+                                }
                             }
                             catch (Exception objException)
                             {
@@ -1092,31 +1108,54 @@ namespace cato
                             break;
                     }
                     break;
-                        case "http":
-                            string link = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
-                            switch (subop)
-                                {
-                                    case "get":
-                                    // add http req code
-                                    break;
+                case "http":
+                    switch (subop)
+                    {
+                        case "get":
+                            // add http req code
+                            break;
                         case "download":
+                            string link = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             string output = parsed[1].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             try
                             {
-                                WebClient myWebClient = new WebClient();
-                                myWebClient.DownloadFile(link, output);
+                                httpdownload(link, output);
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine(ex.ToString());
+                                catoexception("HttpSrcError", "File " + output + " could not be downloaded from " + link , op, opnum, 501);
                             }
                             while (File.Exists(output) == false)
                             {
 
                             }
                             break;
-                                }
+                        case "host":
+                            try
+                            {
+                               //  
+                            }
+                            catch (Exception e)
+                            {
+                                catoexception("HttpHostError", "Server could not be ran", op, opnum, 502);
+                            }
                             break;
+                        default:
+                            catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of http", op, opnum, 104);
+                            break;
+                    }
+                    break;
+                case "sound":
+                    switch (subop)
+                    {
+                        case "beep":
+                    Console.Beep();
+                            break;
+                default:
+                    catoexception("Invaild SubOperation", subop + "Is not a vaild SubOperation of sound", op, opnum, 104);
+                    break;
+            }
+                    break;
                     break;
             default:
                     catoexception("InvalidOperation", "\"This Operation was not recognized.\"", op, opnum, 100);
