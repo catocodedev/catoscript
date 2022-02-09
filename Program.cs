@@ -8,8 +8,8 @@ namespace cato
 {
     public class CatoData
     {
-        public static string version = "Dev0.1.4";
-        public static string purver = "Dev0.1.1";
+        public static string version = "Dev0.1.5 Experimental";
+        public static string purver = "Dev0.1.2";
         public string OS = "null";
         public string debug = "False";       
     }
@@ -43,6 +43,40 @@ namespace cato
         public static void Clear()
         {
             kits.Clear();
+        }
+    }
+    public class Kittens
+    {
+        private static Dictionary<string, string> Kitens = new Dictionary<string, string>();
+        public static void Set(string key, string value)
+        {
+            if (Kitens.ContainsKey(key))
+            {
+                Kitens[key] = value;
+            }
+            else
+            {
+                Kitens.Add(key, value);
+            }
+        }
+        public static string Get(string key)
+        {
+            string result = null;
+
+            if (Kitens.ContainsKey(key))
+            {
+                result = Kitens[key];
+            }
+
+            return result;
+        }
+        public static void Remove(string key)
+        {
+            Kitens.Remove(key);
+        }
+        public static void Clear()
+        {
+            Kitens.Clear();
         }
     }
     internal static class Cato
@@ -122,40 +156,50 @@ namespace cato
                 }
             }
         }
-        static void start()
+        static void start(string option)
         {
             string runner = "cmd";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                runner = "bash";
-            }
+                if (option == "nonew")
+                {
+                    RunFile("main.cato");
+                }
+                else
+                {
+                    Console.WriteLine("Starting main.cato ...");
+                    try
+                    {
 
-            Console.WriteLine("Starting main.cato ...");
-            try
-            {
-
-                    // the /c will quit
-                    System.Diagnostics.ProcessStartInfo procStartInfo =
-                    new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato main.cato");
-                procStartInfo.RedirectStandardOutput = false;
-                procStartInfo.UseShellExecute = true;
-                // Do not create the black window.
-                procStartInfo.CreateNoWindow = true;
-                // Now we create a process, assign its ProcessStartInfo and start it
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo = procStartInfo;
-                proc.Start();
-                proc.WaitForExit();
+                        // the /c will quit
+                        System.Diagnostics.ProcessStartInfo procStartInfo =
+                        new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato main.cato");
+                        procStartInfo.RedirectStandardOutput = false;
+                        procStartInfo.UseShellExecute = true;
+                        // Do not create the black window.
+                        procStartInfo.CreateNoWindow = true;
+                        // Now we create a process, assign its ProcessStartInfo and start it
+                        System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                        proc.StartInfo = procStartInfo;
+                        proc.Start();
+                        proc.WaitForExit();
+                    }
+                    catch (Exception objException)
+                    {
+                        catoexception("SystemRunError", objException.ToString(), "cato spawn", 0, 700);
+                    }
+                }
             }
-            catch (Exception objException)
+            else
             {
-                catoexception("SystemRunError", objException.ToString(), "cato spawn", 0, 700);
+                RunFile("main.cato");
             }
             Console.WriteLine("Project Ran!");
         }
         static void Run(string run)
         {
             Kits.Clear();
+            Kittens.Clear();
             string tmp = "tmp";
             string topop = "";
             string subop = "";
@@ -380,7 +424,11 @@ namespace cato
                         Console.WriteLine("--------------------------------------------");
                         break;
                     case "start":
-                        start();
+                        if (input.EndsWith("-nonew"))
+                        {
+                            start("nonew");
+                        }
+                        start("");
                         break;
                     case "spawn":
                         spawn();
@@ -425,7 +473,7 @@ namespace cato
                 switch (purcmd)
                 {
                     case "get":
-                        // Client.DownloadFile("https://script.cato.fun/pkgs/" + args[2] + "/data/" + args[2] + ".catop", "./logo.png");
+                        
                         break;
                     case "help":
                         Console.WriteLine("------Pur Help-------");
@@ -467,6 +515,9 @@ namespace cato
                         break;
                     case "quit":
                         cli();
+                        break;
+                    case "settings":
+                        // code for adjusting and getting settings
                         break;
                     default:
                         Console.WriteLine("Unknown Command! Try help");
@@ -1287,7 +1338,7 @@ namespace cato
                             cli();
                             break;
                         case "start":
-                            start();
+                            start(args[1]);
                             break;
 
                         case "help":
