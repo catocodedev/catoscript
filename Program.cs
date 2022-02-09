@@ -161,7 +161,7 @@ namespace cato
             string runner = "cmd";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (option == "nonew")
+                if (option == "-nonew")
                 {
                     RunFile("main.cato");
                 }
@@ -426,7 +426,7 @@ namespace cato
                     case "start":
                         if (input.EndsWith("-nonew"))
                         {
-                            start("nonew");
+                            start("-nonew");
                         }
                         start("");
                         break;
