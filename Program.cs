@@ -162,6 +162,7 @@ namespace cato
             string perams = "";
             string subo = "";
             int opnum = 0;
+
             string[] subs = run.Split(';');
             foreach (string sub in subs)
             {
@@ -1133,7 +1134,7 @@ namespace cato
                         case "host":
                             try
                             {
-                               //  
+                               // soon
                             }
                             catch (Exception e)
                             {
