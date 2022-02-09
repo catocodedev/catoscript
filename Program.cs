@@ -161,11 +161,7 @@ namespace cato
             string runner = "cmd";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (option == "-nonew")
-                {
-                    RunFile("main.cato");
-                }
-                else
+                if (option == "-new")
                 {
                     Console.WriteLine("Starting main.cato ...");
                     try
@@ -188,6 +184,10 @@ namespace cato
                     {
                         catoexception("SystemRunError", objException.ToString(), "cato spawn", 0, 700);
                     }
+                }
+                else
+                {
+                    RunFile("main.cato");
                 }
             }
             else
@@ -1338,6 +1338,10 @@ namespace cato
                             cli();
                             break;
                         case "start":
+                            if (args[1] == string.Empty)
+                            {
+                                start("");
+                            }
                             start(args[1]);
                             break;
 
