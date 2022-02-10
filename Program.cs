@@ -10,8 +10,7 @@ namespace cato
     {
         public static string version = "Dev0.1.5 Experimental";
         public static string purver = "Dev0.1.2";
-        public string OS = "null";
-        public string debug = "False";       
+        public string OS = "null";     
     }
     public class Kits
     {
@@ -43,6 +42,44 @@ namespace cato
         public static void Clear()
         {
             kits.Clear();
+        }
+    }
+    public class Settings
+    {
+        private static Dictionary<string, string> sets = new Dictionary<string, string>();
+        public static void Set(string key, string value)
+        {
+            if (sets.ContainsKey(key))
+            {
+                sets[key] = value;
+            }
+            else
+            {
+                sets.Add(key, value);
+            }
+        }
+        public static string Get(string key)
+        {
+            string result = null;
+
+            if (sets.ContainsKey(key))
+            {
+                result = sets[key];
+            }
+            else
+            {
+                result = null;
+            }
+
+            return result;
+        }
+        public static void Remove(string key)
+        {
+            sets.Remove(key);
+        }
+        public static void Clear()
+        {
+            sets.Clear();
         }
     }
     public class Kittens
@@ -105,7 +142,7 @@ namespace cato
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
-            if (File.Exists("debug.catlog"))
+            if (File.Exists(Settings.Get("Debug_File")))
             {
                 delog(type + "Execption: " + info, opnum, errornum);
             }
@@ -163,13 +200,13 @@ namespace cato
             {
                 if (option == "-new")
                 {
-                    Console.WriteLine("Starting main.cato ...");
+                    Console.WriteLine("Starting " + Settings.Get("Main_File") + "...");
                     try
                     {
 
                         // the /c will quit
                         System.Diagnostics.ProcessStartInfo procStartInfo =
-                        new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato main.cato");
+                        new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato " + Settings.Get("Main_File"));
                         procStartInfo.RedirectStandardOutput = false;
                         procStartInfo.UseShellExecute = true;
                         // Do not create the black window.
@@ -187,7 +224,7 @@ namespace cato
                 }
                 else
                 {
-                    RunFile("main.cato");
+                    RunFile(Settings.Get("Main_File"));
                 }
             }
             else
@@ -424,11 +461,11 @@ namespace cato
                         Console.WriteLine("--------------------------------------------");
                         break;
                     case "start":
-                        if (input.EndsWith("-nonew"))
+                        if (input == string.Empty)
                         {
-                            start("-nonew");
+                            start("-new");
                         }
-                        start("");
+                        start(input);
                         break;
                     case "spawn":
                         spawn();
@@ -1254,7 +1291,53 @@ namespace cato
         }
         static void Main(String[] args)
         {
-            if (args == null || args.Length == 0)
+            string settingfile = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/settings.catofig";
+            if (!File.Exists(settingfile)) {
+                Console.WriteLine("Generating catoscript settings file . . .");
+                using (System.IO.FileStream fs = System.IO.File.Create(settingfile))
+                { }
+                try
+                {
+                    using StreamWriter filee = new(settingfile, append: true);
+                    filee.WriteLine("%Catoscript Global Settings File!;");
+                    filee.WriteLine("Main_File: main.cato;");
+                    filee.WriteLine("Debug_File: debug.catlog;");
+                    filee.WriteLine("Debug: false;");
+                }
+                catch (Exception ex)
+                {
+                    catoexception("FileWriteError", settingfile + " could not be written too! details: " + ex, "Creating settings file", -1, 407);
+                }
+            }
+            // setting processing
+            string tmpset = "";
+                string[] readText = File.ReadAllLines(settingfile);
+                readText.Each((str, n) =>
+                {
+                    tmpset = tmpset + str;
+                });
+                string[] subs = tmpset.Split(';');
+                foreach (string sub in subs)
+                {
+                    string trimmed = "";
+                    trimmed = sub.Trim();
+                    if (trimmed.StartsWith("%") || trimmed == String.Empty)
+                    {
+
+                    }
+                    else
+                    {
+                        var pieces = trimmed.Split(new[] { ':' });
+                        Settings.Set(pieces[0], pieces[1]);
+                        // Console.WriteLine(Settings.Get(pieces[0]));
+                    }
+                    }
+
+            if (Settings.Get("Main_File") == null || Settings.Get("Debug_File") == null || Settings.Get("Debug") == null)
+            {
+                catoexception("ConfigError", settingfile + " does not have the required settings for catoscript to run!", "Vaildating Settings", -1, 106);
+            }
+                if (args == null || args.Length == 0)
             {
                 cli();
             }
@@ -1338,11 +1421,14 @@ namespace cato
                             cli();
                             break;
                         case "start":
-                            if (args[1] == string.Empty)
+                            try
+                            {
+                                start(args[1]);
+                            }
+                            catch(Exception)
                             {
                                 start("");
                             }
-                            start(args[1]);
                             break;
 
                         case "help":
