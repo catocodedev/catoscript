@@ -155,11 +155,11 @@ namespace cato
         }
         static void delog(string text, int linenum,int errnum)
         {
-            if (File.Exists("debug.catlog"))
+            if (File.Exists(Settings.Get("Debug_File")))
             {
                 try
                 {
-                    using StreamWriter filee = new("debug.catlog", append: true);
+                    using StreamWriter filee = new(Settings.Get("Debug_File"), append: true);
                     if (errnum == 0)
                     {
                         filee.WriteLine(text);
@@ -171,12 +171,12 @@ namespace cato
                 }
                 catch (Exception ex)
                 {
-                    catoexception("FileWriteError", "debug.catlog" + " could not be written too! details: " + ex, "writing to debug log", linenum, 407);
+                    catoexception("FileWriteError", Settings.Get("Debug_File") + " could not be written too! details: " + ex, "writing to debug log", linenum, 407);
                 }
             }
             else
             {
-                catoexception("FileNotFound", "debug.catlog" + " could not be found!", "writing to debug log", linenum, 404);
+                catoexception("FileNotFound", Settings.Get("Debug_File") + " could not be found!", "writing to debug log", linenum, 404);
             }
         }
         public static async void httpdownload(string url, string file)
@@ -195,9 +195,6 @@ namespace cato
         }
         static void start(string option)
         {
-            string runner = "cmd";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
                 if (option == "-new")
                 {
                     Console.WriteLine("Starting " + Settings.Get("Main_File") + "...");
@@ -206,7 +203,7 @@ namespace cato
 
                         // the /c will quit
                         System.Diagnostics.ProcessStartInfo procStartInfo =
-                        new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato " + Settings.Get("Main_File"));
+                        new System.Diagnostics.ProcessStartInfo("cato " + Settings.Get("Main_File"));
                         procStartInfo.RedirectStandardOutput = false;
                         procStartInfo.UseShellExecute = true;
                         // Do not create the black window.
@@ -225,19 +222,13 @@ namespace cato
                 else
                 {
                     RunFile(Settings.Get("Main_File"));
-                }
+                    Console.WriteLine("Project Ran!");
             }
-            else
-            {
-                RunFile("main.cato");
             }
-            Console.WriteLine("Project Ran!");
-        }
         static void Run(string run)
         {
             Kits.Clear();
             Kittens.Clear();
-            string tmp = "tmp";
             string topop = "";
             string subop = "";
             string perams = "";
@@ -305,14 +296,9 @@ namespace cato
         {
             try
             {
-                string runner = "cmd";
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    runner = "bash";
-                }
                 // the /c will quit
                 System.Diagnostics.ProcessStartInfo procStartInfo =
-                    new System.Diagnostics.ProcessStartInfo(runner, "/c " + "cato")
+                    new System.Diagnostics.ProcessStartInfo("cato")
                     {
                         RedirectStandardOutput = false,
                         UseShellExecute = true,
@@ -337,14 +323,14 @@ namespace cato
             string stat = "run";
             try
             {
-                RunFile("main.cato");
+                RunFile(Settings.Get("Main_File"));
             }
             catch (Exception)
             {
-                Console.WriteLine("main.cato failed to run!");
+                Console.WriteLine(Settings.Get("Main_File") + " failed to run!");
             }
             using var watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
-            watcher.Filter = "main.cato";
+            watcher.Filter = Settings.Get("Main_File");
             watcher.IncludeSubdirectories = false;
             watcher.EnableRaisingEvents = true;
             watcher.Changed += OnChanged;
@@ -359,11 +345,11 @@ namespace cato
                     Thread.Sleep(400);
                 try
                 {
-                    RunFile("main.cato");
+                    RunFile(Settings.Get("Main_File"));
                 }
                 catch(Exception)
                 {
-                    Console.WriteLine("main.cato failed to run!");
+                    Console.WriteLine(Settings.Get("Main_File") + " failed to run!");
                     Thread.Sleep(4000);
                 }
                 }
@@ -518,35 +504,35 @@ namespace cato
                         Console.WriteLine("init - setup a CatoScript Project");
                         break;
                     case "init":
-                        if (!System.IO.File.Exists("main.cato"))
+                        if (!System.IO.File.Exists(Settings.Get("Main_File")))
                         {
-                            Console.WriteLine("Creating main cato file");
+                            Console.WriteLine("Creating " + Settings.Get("Main_File") + " file");
                             using (System.IO.FileStream fs = System.IO.File.Create("main.cato"))
                             {
 
                             }
-                            using StreamWriter filee = new("main.cato", append: true);
+                            using StreamWriter filee = new(Settings.Get("Main_File"), append: true);
                             string tmp = "console.send |" + '"' + "Hello, cato" + '"' + "|;";
                             filee.WriteLine(tmp);
                         }
                         else
                         {
-                            Console.WriteLine("main file already exists!");
+                            Console.WriteLine(Settings.Get("Main_File") + " already exists!");
                         }
-                        if (!System.IO.File.Exists("debug.catlog"))
+                        if (!System.IO.File.Exists(Settings.Get("Debug_File")))
                         {
-                            Console.WriteLine("Creating debug log file");
-                            using (System.IO.FileStream fs = System.IO.File.Create("debug.catlog"))
+                            Console.WriteLine("Creating " + Settings.Get("Debug_File") +" file");
+                            using (System.IO.FileStream fs = System.IO.File.Create(Settings.Get("Debug_File")))
                             {
 
                             }
-                            using StreamWriter filee = new("debug.catlog", append: true);
+                            using StreamWriter filee = new(Settings.Get("Debug_File"), append: true);
                             filee.WriteLine("Project inited with pur " + CatoData.purver);
                             filee.WriteLine("Project made in CatoScript " + CatoData.version);
                         }
                         else
                         {
-                            Console.WriteLine("debug log already exists!");
+                            Console.WriteLine(Settings.Get("Debug_File") + " already exists!");
                         }
                         Console.WriteLine("INIT Done!");
                         break;
@@ -867,6 +853,12 @@ namespace cato
                         case "get.dir":
                             Console.WriteLine(Directory.GetCurrentDirectory());
                             break;
+                        case "get.ver":
+                            Console.WriteLine(CatoData.version);
+                            break;
+                        case "get.pur.ver":
+                            Console.WriteLine(CatoData.purver);
+                            break;
                         case "log":
                             text = parsed[0].Split(new string[] { "\"" }, 3, StringSplitOptions.None)[1];
                             delog(text, opnum, 0);
@@ -1083,16 +1075,10 @@ namespace cato
                                 }
                             }
 
-                            try
-                            {
-                                string runner = "cmd";
-                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                                {
-                                    runner = "bash";
-                                }
+                            try { 
                                 // the /c will quit
                                 System.Diagnostics.ProcessStartInfo procStartInfo =
-                                    new System.Diagnostics.ProcessStartInfo(runner, "/c " + text);
+                                    new System.Diagnostics.ProcessStartInfo(text);
                                 procStartInfo.RedirectStandardOutput = false;
                                 procStartInfo.UseShellExecute = true;
                                 // Do not create the black window.
@@ -1249,6 +1235,10 @@ namespace cato
             default:
                     catoexception("InvalidOperation", "\"This Operation was not recognized.\"", op, opnum, 100);
             break;
+            if (Settings.Get("Debug") == "True")
+                    {
+                        delog("Sucessfully Ran: " + op,opnum,0);
+                    }
         }
     }
         static void RunFile(string fileName)
@@ -1328,7 +1318,7 @@ namespace cato
                     else
                     {
                         var pieces = trimmed.Split(new[] { ':' });
-                        Settings.Set(pieces[0], pieces[1]);
+                        Settings.Set(pieces[0].Trim(), pieces[1].Trim());
                         // Console.WriteLine(Settings.Get(pieces[0]));
                     }
                     }
@@ -1457,7 +1447,7 @@ namespace cato
                                 switch (args[2])
                                 {
                                     case "-debug":
-                                        //allow ddebug
+                                        Settings.Set("Debug", "True");
                                         break;
                                     default:
                                         //nothing lel
@@ -1475,13 +1465,6 @@ namespace cato
                             {
                                 Console.WriteLine(args[1] + "failed to run!");
                             }
-                            Console.WriteLine("Cato File finnished running. Press any key to retrun to CLI");
-                            Console.ReadKey();
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            Console.Clear();
-                            Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
-                            Console.WriteLine("Cato CLI ready!");
                             break;
                         case "spawn":
                             spawn();
