@@ -358,14 +358,19 @@ namespace cato
             
             }
         }
-        static void cli()
+        static void cli(string input)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Clear();
-            Console.WriteLine("-------- CatoScript " + CatoData.version + " ----------");
+            string bs = "\\";
+            Console.WriteLine("   ______      __       _____           _       __ \n" +
+                "  / ____/___ _/ /_____ / ___/__________(_)___  / /_\n" +
+                " / /   / __ `/ __/ __ \\\\__ \\/ ___/ ___/ / __ \\/ __/\n" +
+                "/ /___/ /_/ / /_/ /_/ /__/ / /__/ /  / / /_/ / /_  \n" +
+                "\\____/\\__,_/\\__/\\____/____/\\___/_/  /_/ .___/\\__/  \n" +
+                "                                     /_/ \n" + CatoData.version);
             Console.WriteLine("Cato CLI ready!");
-            string input = "";
             while (input != "exit")
             {
                 Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
@@ -378,8 +383,11 @@ namespace cato
                     args.Cancel = true;
                     System.Environment.Exit(0);
                 }
+                if (input == String.Empty)
+                {
                     input = Console.ReadLine();
-                switch (input)
+                }
+                    switch (input)
                 {
                     case "exit":
                         Console.ForegroundColor = ConsoleColor.White;
@@ -414,7 +422,7 @@ namespace cato
                         break;
 
                     case "pur":
-                        pur();
+                        pur("");
                         input = "";
                         break;
 
@@ -470,16 +478,21 @@ namespace cato
                         Console.WriteLine("Unknown Command! Try help");
                         break;
                 }
+                Console.ReadKey();
+                input = "";
             }
         }
-            static void pur()
+            static void pur(string purcmd)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Clear();
-                Console.WriteLine("--------PUR "+ CatoData.purver +"----------");
+                Console.WriteLine(" ____  _  _  ____ \n" +
+                    "(  _ \\/ )( \\(  _ \\ \n" +
+                    " ) __ /) \\/ ( ) / \n" +
+                    "(__)  \\____/(__\\_) \n" + CatoData.purver);
                 Console.WriteLine("PUR CLI ready!");
-            string purcmd = "";
+            purcmd = "";
             while (purcmd != "quit")
             {
                 Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
@@ -492,7 +505,10 @@ namespace cato
                     args.Cancel = true;
                     System.Environment.Exit(0);
                 }
-                purcmd = Console.ReadLine();
+                if (purcmd == String.Empty)
+                {
+                    purcmd = Console.ReadLine();
+                }
                 switch (purcmd)
                 {
                     case "get":
@@ -537,7 +553,7 @@ namespace cato
                         Console.WriteLine("INIT Done!");
                         break;
                     case "quit":
-                        cli();
+                        cli("");
                         break;
                     case "settings":
                         // code for adjusting and getting settings
@@ -546,6 +562,8 @@ namespace cato
                         Console.WriteLine("Unknown Command! Try help");
                         break;
                 }
+                Console.ReadKey();
+                purcmd = "";
             }   
         }
         public static void Execute(string op, string topop, string subop, string perams, int opnum)
@@ -1329,176 +1347,30 @@ namespace cato
             }
                 if (args == null || args.Length == 0)
             {
-                cli();
+                cli("");
             }
             else
             {
                 try
                 {
-                    switch (args[0])
+                    if (args[0].Contains(".cato"))
                     {
-                        case "ver":
-                        case "version":
-                            Console.WriteLine(CatoData.version);
-                            System.Environment.Exit(0);
-                            break;
-
-                        case "pur":
-                            if (args[1] != null)
-                            {
-                                switch (args[1])
-                                {
-                                    case "get":
-                                        // Client.DownloadFile("https://script.cato.fun/pkgs/" + args[2] + "/data/" + args[2] + ".catop", "./logo.png");
-                                        break;
-                                    case "help":
-                                        Console.WriteLine("------Pur Help-------");
-                                        Console.WriteLine("quit - retrun to CatoScript CLI");
-                                        Console.WriteLine("init - setup a CatoScript Project");
-                                        break;
-                                    case "init":
-                                        if (!System.IO.File.Exists("main.cato"))
-                                        {
-                                            Console.WriteLine("Creating main cato file");
-                                            using (System.IO.FileStream fs = System.IO.File.Create("main.cato"))
-                                            {
-
-                                            }
-                                            using StreamWriter filee = new("main.cato", append: true);
-                                            string tmp = "console.send |"+'"'+"Hello, cato"+'"'+"|;";
-                                            filee.WriteLine(tmp);
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("main file already exists!");
-                                        }
-                                        if (!System.IO.File.Exists("debug.catlog"))
-                                        {
-                                            Console.WriteLine("Creating debug log file");
-                                            using (System.IO.FileStream fs = System.IO.File.Create("debug.catlog"))
-                                            {
-
-                                            }
-                                            using StreamWriter filee = new("debug.catlog", append: true);
-                                            filee.WriteLine("Project inited with pur " + CatoData.purver);
-                                            filee.WriteLine("Project made in CatoScript " + CatoData.version);
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("debug log already exists!");
-                                        }
-                                        Console.WriteLine("INIT Done!");
-                                        break;
-                                    case "quit":
-                                        cli();
-                                        break;
-                                        break;
-                                    default:
-                                        Console.WriteLine("Unknown Command! Try help");
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                pur();
-                            }
-                            break;
-
-                        case "":
-                            cli();
-                            break;
-                        case "cli":
-                            cli();
-                            break;
-                        case "start":
-                            try
-                            {
-                                start(args[1]);
-                            }
-                            catch(Exception)
-                            {
-                                start("");
-                            }
-                            break;
-
-                        case "help":
-                            Console.WriteLine("----------CatoScript Help-------------------");
-                            Console.WriteLine("<anything>.cato - Runs the file");
-                            Console.WriteLine("run <anything>.cato - Runs the file");
-                            Console.WriteLine("version/ver - shows version of catoscript");
-                            Console.WriteLine("pur - open PUR CLI");
-                            Console.WriteLine("eval - test code");
-                            Console.WriteLine("start - start your catoscript project");
-                            Console.WriteLine("activate - activate cato live run");
-                            Console.WriteLine("--------------------------------------------");
-                            System.Environment.Exit(0);
-                            break;
-
-                        case "eval":
-                            Console.Clear();
-                            string eval = Console.ReadLine();
-                            Run(eval);
-                            Console.WriteLine("==========EVAL RAN!========");
-                            System.Environment.Exit(0);
-                            break;
-                        case "run":
-                            if (args[2] != string.Empty)
-                            {
-                                switch (args[2])
-                                {
-                                    case "-debug":
-                                        Settings.Set("Debug", "True");
-                                        break;
-                                    default:
-                                        //nothing lel
-                                        break;
-                                }
-                            }
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            Console.Clear();
-                            try
-                            {
-                                RunFile(args[1]);
-                            }
-                            catch (Exception)
-                            {
-                                Console.WriteLine(args[1] + "failed to run!");
-                            }
-                            break;
-                        case "spawn":
-                            spawn();
-                            break;
-                        case "activate":
-                            arun();
-                            break;
-                        case "info":
-                            Console.WriteLine("Catoscript - " + CatoData.version);
-                            Console.WriteLine("Pur - " + CatoData.purver);
-                            Console.WriteLine("Install Dir - " + Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-                            Console.WriteLine("Github - https://github.com/catocodedev/catoscript");
-                            Console.WriteLine("Running OS - " + RuntimeInformation.OSDescription + "|" + RuntimeInformation.OSArchitecture);
-                            break;
-                        default:
-                            if (args[0].Contains(".cato"))
-                            {
-                                try
-                                {
-                                    RunFile(args[0]);
-                                }
-                                catch (Exception)
-                                {
-                                    Console.WriteLine(args[0] + "failed to run!");
-                                }
-                            }
-                            else
-                            {
-                            Console.Clear();
-                            Console.WriteLine("Command "+ args[0] + " not found please use `cato help`");
-                            System.Environment.Exit(0);
-                            break;
-                            }
-                            break;
+                        try
+                        {
+                            RunFile(args[0]);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine(args[0] + "failed to run!");
+                        }
+                    }
+                    else if (args[0] == "pur")
+                    {
+                        pur(args[0]);
+                    }
+                    else
+                    {
+                        cli(args[0]);
                     }
                 }
                 catch (Exception err)
