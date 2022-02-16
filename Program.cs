@@ -15,14 +15,17 @@ namespace cato
     public class Kits
     {
         private static Dictionary<string, string> kits = new Dictionary<string, string>();
-        public static void Set(string key, string value)
+        private static Dictionary<string, string> types = new Dictionary<string, string>();
+        public static void Set(string key, string value, string type)
         {
             if (kits.ContainsKey(key))
             {
                 kits[key] = value;            }
             else
             {
-                kits.Add(key, value);            }
+                kits.Add(key, value); 
+                types.Add(key, type);
+            }
         }
         public static string Get(string key)
         {
@@ -35,13 +38,26 @@ namespace cato
 
             return result;
         }
+        public static string GetType(string key)
+        {
+            string result = null;
+
+            if (types.ContainsKey(key))
+            {
+                result = types[key];
+            }
+
+            return result;
+        }
         public static void Remove(string key)
         {
             kits.Remove(key);
+            types.Remove(key);
         }
         public static void Clear()
         {
             kits.Clear();
+            types.Clear();
         }
     }
     public class Settings
@@ -566,6 +582,10 @@ namespace cato
                 purcmd = "";
             }   
         }
+        public static void Parse(string perams, string type)
+        {
+
+        }
         public static void Execute(string op, string topop, string subop, string perams, int opnum)
         {
             int peramnum = 0;
@@ -1011,7 +1031,7 @@ namespace cato
                         case "make":
                             try
                             {
-                                Kits.Set(parsed[0], parsed[1]);
+                                Kits.Set(parsed[0], parsed[1],parsed[2]);
                             }
                             catch (Exception)
                             {
@@ -1034,7 +1054,7 @@ namespace cato
                         case "set":
                             try
                             {
-                                Kits.Set(parsed[0], parsed[1]);
+                                Kits.Set(parsed[0], parsed[1],parsed[2]);
                             }
                             catch (Exception)
                             {
@@ -1044,11 +1064,14 @@ namespace cato
                         case "get":
                             Console.WriteLine(Kits.Get(parsed[0]));
                             break;
+                        case "getype":
+                            Console.WriteLine(Kits.GetType(parsed[0]));
+                            break;
                         case "set.from.input":
                             string value = Console.ReadLine();
                             try
                             {
-                                Kits.Set(parsed[0], value);
+                                Kits.Set(parsed[0], value, parsed[2]);
                             }
                             catch (Exception)
                             {
