@@ -387,6 +387,10 @@ namespace cato
                 "\\____/\\__,_/\\__/\\____/____/\\___/_/  /_/ .___/\\__/  \n" +
                 "                                     /_/ \n" + CatoData.version);
             Console.WriteLine("Cato CLI ready!");
+            if (input != String.Empty)
+            {
+                input = Console.ReadLine();
+            }
             while (input != "exit")
             {
                 Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
@@ -494,7 +498,6 @@ namespace cato
                         Console.WriteLine("Unknown Command! Try help");
                         break;
                 }
-                Console.ReadKey();
                 input = "";
             }
         }
@@ -508,7 +511,10 @@ namespace cato
                     " ) __ /) \\/ ( ) / \n" +
                     "(__)  \\____/(__\\_) \n" + CatoData.purver);
                 Console.WriteLine("PUR CLI ready!");
-            purcmd = "";
+            if (purcmd != String.Empty)
+            {
+                purcmd = Console.ReadLine();
+            }
             while (purcmd != "quit")
             {
                 Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
