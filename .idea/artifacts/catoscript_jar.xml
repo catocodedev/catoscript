@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="catoscript:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/catoscript_jar</output-path>
+    <root id="archive" name="catoscript.jar">
+      <element id="module-output" name="catoscript" />
+    </root>
+  </artifact>
+</component>
