@@ -4,6 +4,10 @@
 #include <sstream>
 #include <string>
 
+// Catoscript custom imports lol
+
+#include "tokenizer.h"
+
 using std::cin;
 using std::endl;
 using std::cout; 
@@ -60,21 +64,24 @@ int main(int argc,char* argv[])
 		filename = argv[1];
 	}
 	else {
-		filename = "scripts/test.cato";
+		filename = "readme.txt";
 	}
 	string file_contents;      
 	file_contents = readFileIntoString(filename);
 	std::vector<std::string> result = explode(file_contents, ';');
-
-	for (size_t i = 0; i < result.size(); i++) {
-		cout << "\"" << result[i] << "\"" << endl;
-	}
 	if (file_contents == "0") {
 		exit(404);
 	}
-	// cout << file_contents << endl;
+	string parsed = "";
+	for (size_t i = 0; i < result.size(); i++) {
+		cout << "\"" << result[i] << "\"" << endl;
+		parsed = parsed + parse(result[i]);
+	}
 
-	std::cout << "Press enter to continue!";
+	// cout << file_contents << endl;
+	
+	cout << parsed << endl;
+	cout << "Press enter to continue!";
 	cin.get();
 	return 0;
 }
