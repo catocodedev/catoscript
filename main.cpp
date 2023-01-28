@@ -64,7 +64,7 @@ int main(int argc,char* argv[])
 		filename = argv[1];
 	}
 	else {
-		filename = "readme.txt";
+		filename = "script/test.cato";
 	}
 	string file_contents;      
 	file_contents = readFileIntoString(filename);

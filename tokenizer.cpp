@@ -19,7 +19,7 @@ using std::ostringstream;
 
 using namespace std;
 
-vector<string> explode(const string& str, const char& ch) {
+vector<string> explodee(const string& str, const char& ch) {
 	string next;
 	vector<string> result;
 
@@ -45,7 +45,18 @@ vector<string> explode(const string& str, const char& ch) {
 }
 
 string parse(string og) {
-	std::cout << "TOKENIZER RUNNING!" << std::endl;
+	cout << "TOKENIZER RUNNING!" << endl;
+	// find the what the operation is
+	vector<string> tokens = explodee(og, ' ');
+	string full = "";
+	for (size_t i = 0; i < tokens.size(); i++) {
+		cout << "\"" << tokens[i] << "\"" << endl;
+	}
+	string operation = tokens[0];
+	// find what category the operation is using .
+	vector<string> category = explodee(operation, '.');
+	string cat = category[0];
+	string ope = category[1];
 
 	return "meow";
 }
